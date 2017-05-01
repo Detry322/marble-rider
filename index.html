@@ -13,19 +13,19 @@
     <script src="build.js"></script>
     <script src="vendor/aframe-teleport-controls.min.js"></script>
     <script src="vendor/aframe-tooltip-component.min.js"></script>
+    <script src="vendor/aframe-physics-components.min.js"></script>
     <link rel="stylesheet" href="css/main.css">
     <link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32" />
     <link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16" />
   </head>
   <body style="background-color: #aeaeae">
-    <a-scene>
+    <a-scene physics-world="gravity: 0 -9.8 0">
       <a-assets>
         <img id="skymap" src="assets/images/sky.jpg" crossOrigin="anonymous">
         <img id="uinormal" src="assets/images/ui-normal.png" crossOrigin="anonymous">
         <img id="floor" src="assets/images/floor.jpg" crossOrigin="anonymous">
         <a-asset-item id="logoobj" src="assets/models/logo.obj"></a-asset-item>
         <a-asset-item id="logomtl" src="assets/models/logo.mtl"></a-asset-item>
-        <a-asset-item id="marble" src="assets/models/sphere.obj"></a-asset-item>
         <a-asset-item id="uiobj" src="assets/models/ui.obj"></a-asset-item>
         <a-asset-item id="hitEntityObj" src="assets/models/teleportHitEntity.obj"></a-asset-item>
       </a-assets>
@@ -33,14 +33,17 @@
       <a-light type="point" light="color: #fff; intensity:0.2" position="-3 -10 0"></a-light>
       <a-light type="hemisphere" groundColor="#888" intensity="0.8"></a-light>
       <a-entity id="logo" obj-model="obj: #logoobj; mtl: #logomtl"></a-entity>
-      <a-entity id="marble" obj-model="obj: #marble" position="0 1 -5"></a-entity>
+      <a-entity physics-body="boundingBox: 1 1 1; mass: 5; velocity: 0.1 7 0" 
+              geometry="primitive: box; depth: 1; height: 1; width: 1;" material="color: red" position="2 3 -5"></a-entity>
+      <a-entity physics-body="boundingBox: 1 1 1; mass: 5; velocity: 0.1 7 0" 
+              geometry="primitive: box; depth: 1; height: 1; width: 1;" material="color: green" position="1 5 -5"></a-entity>
       <!--geometry="primitive: circle; radius: 12;"
       rotation="-90 0 0"-->
       <a-entity id="hitEntityLeft" material="shader:flat; color: #ff3468" obj-model="obj: #hitEntityObj"></a-entity>
       <a-entity id="hitEntityRight" material="shader:flat; color: #ff3468" obj-model="obj: #hitEntityObj"></a-entity>
 
       <a-entity id="ground"
-                geometry="primitive: box; width: 12; height: 0.01; depth: 12"
+                geometry="primitive: box; width: 12; height: 0.01; depth: 12" physics-body="boundingBox: 20 0.1 20; mass: 0; velocity: 0 0 0" 
                 material="shader: flat; src: #floor">
               </a-entity>
       <a-entity id="left-hand"
