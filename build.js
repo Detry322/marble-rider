@@ -1915,7 +1915,7 @@
 	        } else {
 	          if (self.active) {
 	            self.previousEntity = self.currentEntity;
-	            self.previousEntity.setAttribute('dynamic-body', '');
+	            console.log(self);
 	            self.currentStroke = null;
 	          }
 	          self.active = false;
