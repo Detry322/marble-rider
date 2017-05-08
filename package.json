@@ -22,7 +22,7 @@
     "webpack-dev-server": "^1.16.1"
   },
   "dependencies": {
-    "aframe-physics-components": "^1.1.0",
+    "aframe-physics-system": "^1.4.0",
     "aframe-tooltip-component": "^0.1.0"
   }
 }
