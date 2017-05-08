@@ -62,6 +62,9 @@ AFRAME.registerComponent('brush', {
           }
         } else {
           if (self.active) {
+            if (self.finishStroke) {
+              self.finishStroke();
+            }
             self.previousEntity = self.currentEntity;
             self.currentStroke = null;
           }
