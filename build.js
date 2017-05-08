@@ -4320,12 +4320,12 @@
 	        side: THREE.DoubleSide,
 	        shading: THREE.FlatShading
 	      });
-	      this.geometry = new THREE.SphereGeometry(1);
+	      this.geometry = new THREE.SphereGeometry(2);
 	    },
 	    addPoint: function (position, orientation, pointerPosition, pressure, timestamp) {
 	      var box = new THREE.Mesh(this.geometry, this.material);
 
-	      var sca = pressure * this.data.size * Math.random();
+	      var sca = this.data.size;
 	      box.scale.set(sca, sca, sca);
 	      box.position.copy(pointerPosition);
 	      box.rotation.copy(orientation);
