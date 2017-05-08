@@ -1914,6 +1914,9 @@
 	          }
 	        } else {
 	          if (self.active) {
+	            if (self.finishStroke) {
+	              self.finishStroke();
+	            }
 	            self.previousEntity = self.currentEntity;
 	            self.currentStroke = null;
 	          }
@@ -3642,6 +3645,9 @@
 	      this.mesh.position.z = (this.firstPoint.z + pointerPosition.z)/2;
 	      this.mesh.lookAt(pointerPosition)
 	      return true;
+	    },
+	    finishStroke: function() {
+	      console.log("STROKE DONE!");
 	    }
 	  },
 	  {thumbnail: 'brushes/thumb_single_sphere.png', spacing: 0.0}
