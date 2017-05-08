@@ -186,22 +186,22 @@ AFRAME.registerComponent('ui', {
         }
         break;
       }
-      case name === 'copy': {
-        if (!this.pressedObjects[name]) {
-          this.copyBrush();
-        }
-        break;
-      }
+      // case name === 'copy': {
+      //   if (!this.pressedObjects[name]) {
+      //     this.copyBrush();
+      //   }
+      //   break;
+      // }
       case name === 'hue': {
         this.onHueDown(position);
         break;
       }
-      case name === 'save': {
-        if (!this.pressedObjects[name]) {
-          this.el.sceneEl.systems.painter.upload();
-        }
-        break;
-      }
+      // case name === 'save': {
+      //   if (!this.pressedObjects[name]) {
+      //     this.el.sceneEl.systems.painter.upload();
+      //   }
+      //   break;
+      // }
       case name === 'sizebg': {
         this.onBrushSizeBackgroundDown(position);
         break;
