@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <title>Marble Rider</title>
+  <script src="build.js"></script>
   <script src="vendor/aframe-master.min.js"></script>
   <script src="vendor/aframe-physics-components.min.js"></script>
 </head>
@@ -22,9 +23,9 @@
     <a-entity id="sky" geometry="primitive:sphere; radius:30; phiLength:360; phiStart:0; thetaLength:90" material="shader:flat; side:back; src:#skyTexture"></a-sky>
     <a-entity id="ground" geometry="primitive: box; width: 12; height: 0.01; depth: 12" physics-body="boundingBox: 20 0.1 20; mass: 0; velocity: 0 0 0" material="shader: flat; src: #groundTexture"></a-entity>
     
-    <a-text value="Marble Rider!" color="#000000" position="-0.9 1.6 -3" scale="1.5 1.5 1.5"></a-text>
+    <a-text id="logo" value="Marble Rider!" color="#000000" position="-1.3 1.6 -4" scale="2 2 2"></a-text>
 
-    <a-entity physics-body="boundingBox: .5 .5 .5; mass: 5; velocity: 0 7 0.2" 
+    <!-- <a-entity physics-body="boundingBox: .5 .5 .5; mass: 5; velocity: 0 7 0.2" 
       geometry="primitive: box; depth: .5; height: .5; width: .5;" material="color: red" position="1.5 3 -5"></a-entity>
     <a-entity physics-body="boundingBox: .5 .5 .5; mass: 5; velocity: 0 7 0" 
       geometry="primitive: box; depth: .5; height: .5; width: .5;" material="color: green" position="1 5 -5"></a-entity>
@@ -93,11 +94,11 @@
     <a-entity physics-body="boundingBox: .5 .5 .5; mass: 5; velocity: -0.106725727152 7 0.185747236182" 
       geometry="primitive: box; depth: .5; height: .5; width: .5;" material="color: red" position="4.33120908335 8.06133584134 2.32379036595"></a-entity>
     <a-entity physics-body="boundingBox: .5 .5 .5; mass: 5; velocity: 0.195162722273 7 -0.0399895130312" 
-      geometry="primitive: box; depth: .5; height: .5; width: .5;" material="color: blue" position="-2.9961095067 6.97430625221 1.91468506715"></a-entity>
+      geometry="primitive: box; depth: .5; height: .5; width: .5;" material="color: blue" position="-2.9961095067 6.97430625221 1.91468506715"></a-entity> -->
 
     <a-entity id="left-hand"
               brush
-              if-no-vr-headset="visible: true"
+              if-no-vr-headset="visible: false"
               paint-controls="hand: left"
               teleport-controls="button: bbutton; ground: #ground; hitCylinderColor: #ff3468; curveHitColor: #ff3468; curveMissColor: #333333; curveLineWidth: 0.01; hitEntity: #hitEntityLeft"
               ui>
@@ -121,7 +122,7 @@
               </a-entity>
     <a-entity id="right-hand"
               brush
-              if-no-vr-headset="visible: true"
+              if-no-vr-headset="visible: false"
               paint-controls="hand: right"
               teleport-controls="button: bbutton; ground: #ground; hitCylinderColor: #ff3468; curveHitColor: #ff3468; curveMissColor: #333333; curveLineWidth: 0.01; hitEntity: #hitEntityRight"
               ui>
