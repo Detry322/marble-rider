@@ -67,14 +67,14 @@
 	__webpack_require__(17);
 	__webpack_require__(18);
 
-	// require('./brushes/line.js');
-	// require('./brushes/stamp.js');
-	// require('./brushes/spheres.js');
 	__webpack_require__(19);
 	__webpack_require__(20);
-	// require('./brushes/cubes.js');
-	// require('./brushes/rainbow.js');
 	__webpack_require__(21);
+	__webpack_require__(22);
+	__webpack_require__(23);
+	__webpack_require__(24);
+	__webpack_require__(25);
+	__webpack_require__(26);
 
 
 /***/ }),
@@ -3583,6 +3583,738 @@
 /***/ (function(module, exports) {
 
 	/* globals AFRAME THREE */
+	(function () {
+	  var line = {
+
+	    init: function (color, brushSize) {
+	      this.idx = 0;
+	      this.geometry = new THREE.BufferGeometry();
+	      this.vertices = new Float32Array(this.options.maxPoints * 3 * 3);
+	      this.normals = new Float32Array(this.options.maxPoints * 3 * 3);
+	      this.uvs = new Float32Array(this.options.maxPoints * 2 * 2);
+
+	      this.geometry.setDrawRange(0, 0);
+	      this.geometry.addAttribute('position', new THREE.BufferAttribute(this.vertices, 3).setDynamic(true));
+	      this.geometry.addAttribute('uv', new THREE.BufferAttribute(this.uvs, 2).setDynamic(true));
+	      this.geometry.addAttribute('normal', new THREE.BufferAttribute(this.normals, 3).setDynamic(true));
+
+	      var mesh = new THREE.Mesh(this.geometry, this.getMaterial());
+	      mesh.drawMode = THREE.TriangleStripDrawMode;
+
+	      mesh.frustumCulled = false;
+	      mesh.vertices = this.vertices;
+
+	      this.object3D.add(mesh);
+	    },
+
+	    getMaterial: function () {
+	      var map = this.materialOptions.map;
+	      var type = this.materialOptions.type;
+
+	      var defaultOptions = {};
+	      var defaultTextureOptions = {};
+	      if (map) {
+	        defaultTextureOptions = {
+	          map: map,
+	          transparent: true,
+	          alphaTest: 0.5
+	        };
+	      }
+
+	      if (type === 'shaded') {
+	        defaultOptions = {
+	          color: this.data.color,
+	          roughness: 0.75,
+	          metalness: 0.25,
+	          side: THREE.DoubleSide
+	        };
+	      } else {
+	        defaultOptions = {
+	          color: this.data.color,
+	          side: THREE.DoubleSide
+	        };
+	      }
+
+	      var options = Object.assign(defaultOptions, defaultTextureOptions, this.materialOptions);
+	      delete options.type;
+
+	      if (type === 'shaded') {
+	        return new THREE.MeshStandardMaterial(options);
+	      } else {
+	        return new THREE.MeshBasicMaterial(options);
+	      }
+	    },
+	    addPoint: function (position, orientation, pointerPosition, pressure, timestamp) {
+	      var uv = 0;
+	      for (i = 0; i < this.data.numPoints; i++) {
+	        this.uvs[ uv++ ] = i / (this.data.numPoints - 1);
+	        this.uvs[ uv++ ] = 0;
+
+	        this.uvs[ uv++ ] = i / (this.data.numPoints - 1);
+	        this.uvs[ uv++ ] = 1;
+	      }
+
+	      var direction = new THREE.Vector3();
+	      direction.set(1, 0, 0);
+	      direction.applyQuaternion(orientation);
+	      direction.normalize();
+
+	      var posA = pointerPosition.clone();
+	      var posB = pointerPosition.clone();
+	      var brushSize = this.data.size * pressure;
+	      posA.add(direction.clone().multiplyScalar(brushSize / 2));
+	      posB.add(direction.clone().multiplyScalar(-brushSize / 2));
+
+	      this.vertices[ this.idx++ ] = posA.x;
+	      this.vertices[ this.idx++ ] = posA.y;
+	      this.vertices[ this.idx++ ] = posA.z;
+
+	      this.vertices[ this.idx++ ] = posB.x;
+	      this.vertices[ this.idx++ ] = posB.y;
+	      this.vertices[ this.idx++ ] = posB.z;
+
+	      this.computeVertexNormals();
+	      this.geometry.attributes.normal.needsUpdate = true;
+	      this.geometry.attributes.position.needsUpdate = true;
+	      this.geometry.attributes.uv.needsUpdate = true;
+
+	      this.geometry.setDrawRange(0, this.data.numPoints * 2);
+
+	      return true;
+	    },
+
+	    computeVertexNormals: function () {
+	      var pA = new THREE.Vector3();
+	      var pB = new THREE.Vector3();
+	      var pC = new THREE.Vector3();
+	      var cb = new THREE.Vector3();
+	      var ab = new THREE.Vector3();
+
+	      for (var i = 0, il = this.idx; i < il; i++) {
+	        this.normals[ i ] = 0;
+	      }
+
+	      var pair = true;
+	      for (i = 0, il = this.idx; i < il; i += 3) {
+	        if (pair) {
+	          pA.fromArray(this.vertices, i);
+	          pB.fromArray(this.vertices, i + 3);
+	          pC.fromArray(this.vertices, i + 6);
+	        } else {
+	          pA.fromArray(this.vertices, i + 3);
+	          pB.fromArray(this.vertices, i);
+	          pC.fromArray(this.vertices, i + 6);
+	        }
+	        pair = !pair;
+
+	        cb.subVectors(pC, pB);
+	        ab.subVectors(pA, pB);
+	        cb.cross(ab);
+	        cb.normalize();
+
+	        this.normals[ i ] += cb.x;
+	        this.normals[ i + 1 ] += cb.y;
+	        this.normals[ i + 2 ] += cb.z;
+
+	        this.normals[ i + 3 ] += cb.x;
+	        this.normals[ i + 4 ] += cb.y;
+	        this.normals[ i + 5 ] += cb.z;
+
+	        this.normals[ i + 6 ] += cb.x;
+	        this.normals[ i + 7 ] += cb.y;
+	        this.normals[ i + 8 ] += cb.z;
+	      }
+
+	      /*
+	      first and last vertice (0 and 8) belongs just to one triangle
+	      second and penultimate (1 and 7) belongs to two triangles
+	      the rest of the vertices belongs to three triangles
+
+	        1_____3_____5_____7
+	        /\    /\    /\    /\
+	       /  \  /  \  /  \  /  \
+	      /____\/____\/____\/____\
+	      0    2     4     6     8
+	      */
+
+	      // Vertices that are shared across three triangles
+	      for (i = 2 * 3, il = this.idx - 2 * 3; i < il; i++) {
+	        this.normals[ i ] = this.normals[ i ] / 3;
+	      }
+
+	      // Second and penultimate triangle, that shares just two triangles
+	      this.normals[ 3 ] = this.normals[ 3 ] / 2;
+	      this.normals[ 3 + 1 ] = this.normals[ 3 + 1 ] / 2;
+	      this.normals[ 3 + 2 ] = this.normals[ 3 * 1 + 2 ] / 2;
+
+	      this.normals[ this.idx - 2 * 3 ] = this.normals[ this.idx - 2 * 3 ] / 2;
+	      this.normals[ this.idx - 2 * 3 + 1 ] = this.normals[ this.idx - 2 * 3 + 1 ] / 2;
+	      this.normals[ this.idx - 2 * 3 + 2 ] = this.normals[ this.idx - 2 * 3 + 2 ] / 2;
+
+	      this.geometry.normalizeNormals();
+	    }
+	  };
+
+	  var lines = [
+	    {
+	      name: 'flat',
+	      materialOptions: {
+	        type: 'flat'
+	      },
+	      thumbnail: 'brushes/thumb_flat.gif'
+	    },
+	    {
+	      name: 'smooth',
+	      materialOptions: {
+	        type: 'shaded'
+	      },
+	      thumbnail: 'brushes/thumb_smooth.gif'
+	    },
+	    {
+	      name: 'squared-textured',
+	      materialOptions: {
+	        type: 'textured',
+	        textureSrc: 'brushes/squared_textured.png'
+	      },
+	      thumbnail: 'brushes/thumb_squared_textured.gif'
+	    },
+	    {
+	      name: 'line-gradient',
+	      materialOptions: {
+	        type: 'textured',
+	        textureSrc: 'brushes/line_gradient.png'
+	      },
+	      thumbnail: 'brushes/thumb_line_gradient.gif'
+	    },
+	    {
+	      name: 'silky-flat',
+	      materialOptions: {
+	        type: 'textured',
+	        textureSrc: 'brushes/silky_flat.png'
+	      },
+	      thumbnail: 'brushes/thumb_silky_flat.gif'
+	    },
+	    {
+	      name: 'silky-textured',
+	      materialOptions: {
+	        type: 'textured',
+	        textureSrc: 'brushes/silky_textured.png'
+	      },
+	      thumbnail: 'brushes/thumb_silky_textured.gif'
+	    },
+	    {
+	      name: 'lines1',
+	      materialOptions: {
+	        type: 'textured',
+	        textureSrc: 'brushes/lines1.png'
+	      },
+	      thumbnail: 'brushes/thumb_lines1.gif'
+	    },
+	    {
+	      name: 'lines2',
+	      materialOptions: {
+	        type: 'textured',
+	        textureSrc: 'brushes/lines2.png'
+	      },
+	      thumbnail: 'brushes/thumb_lines2.gif'
+	    },
+	    {
+	      name: 'lines3',
+	      materialOptions: {
+	        type: 'textured',
+	        textureSrc: 'brushes/lines3.png'
+	      },
+	      thumbnail: 'brushes/thumb_lines3.gif'
+	    },
+	    {
+	      name: 'lines4',
+	      materialOptions: {
+	        type: 'textured',
+	        textureSrc: 'brushes/lines4.png'
+	      },
+	      thumbnail: 'brushes/thumb_lines4.gif'
+	    },
+	    {
+	      name: 'lines5',
+	      materialOptions: {
+	        type: 'textured',
+	        textureSrc: 'brushes/lines5.png'
+	      },
+	      thumbnail: 'brushes/thumb_lines5.gif'
+	    },
+	    {
+	      name: 'line-grunge1',
+	      materialOptions: {
+	        type: 'textured',
+	        textureSrc: 'brushes/line_grunge1.png'
+	      },
+	      thumbnail: 'brushes/thumb_line_grunge1.gif'
+	    },
+	    {
+	      name: 'line-grunge2',
+	      materialOptions: {
+	        type: 'textured',
+	        textureSrc: 'brushes/line_grunge2.png'
+	      },
+	      thumbnail: 'brushes/thumb_line_grunge2.gif'
+	    },
+	    {
+	      name: 'line-grunge3',
+	      materialOptions: {
+	        type: 'textured',
+	        textureSrc: 'brushes/line_grunge3.png'
+	      },
+	      thumbnail: 'brushes/thumb_line_grunge3.gif'
+	    }
+	  ];
+
+	  var textureLoader = new THREE.TextureLoader();
+
+	  for (var i = 0; i < lines.length; i++) {
+	    var definition = lines[i];
+	    if (definition.materialOptions.textureSrc) {
+	      definition.materialOptions.map = textureLoader.load(definition.materialOptions.textureSrc);
+	      delete definition.materialOptions.textureSrc;
+	    }
+	    AFRAME.registerBrush(definition.name, Object.assign({}, line, {materialOptions: definition.materialOptions}), {thumbnail: definition.thumbnail, maxPoints: 3000});
+	  }
+	})();
+
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports) {
+
+	/* global AFRAME THREE */
+	(function () {
+	  var stamp = {
+
+	    init: function (color, brushSize) {
+	      this.idx = 0;
+	      this.geometry = new THREE.BufferGeometry();
+	      this.vertices = new Float32Array(this.options.maxPoints * 3 * 3 * 2);
+	      this.normals = new Float32Array(this.options.maxPoints * 3 * 3 * 2);
+	      this.uvs = new Float32Array(this.options.maxPoints * 2 * 3 * 2);
+
+	      this.geometry.setDrawRange(0, 0);
+	      this.geometry.addAttribute('position', new THREE.BufferAttribute(this.vertices, 3).setDynamic(true));
+	      this.geometry.addAttribute('uv', new THREE.BufferAttribute(this.uvs, 2).setDynamic(true));
+	      this.geometry.addAttribute('normal', new THREE.BufferAttribute(this.normals, 3).setDynamic(true));
+
+	      var mesh = new THREE.Mesh(this.geometry, this.getMaterial());
+	      this.currAngle = 0;
+	      this.subTextures = 1;
+	      this.angleJitter = 0;
+	      this.autoRotate = false;
+
+	      if (this.materialOptions['subTextures'] !== undefined) {
+	        this.subTextures = this.materialOptions['subTextures'];
+	      }
+	      if (this.materialOptions['autoRotate'] === true) {
+	        this.autoRotate = true;
+	      }
+	      if (this.materialOptions['angleJitter'] !== undefined) {
+	        this.angleJitter = this.materialOptions['angleJitter'];
+	        this.angleJitter = this.angleJitter * 2 - this.angleJitter;
+	      }
+
+	      mesh.frustumCulled = false;
+	      mesh.vertices = this.vertices;
+	      this.object3D.add(mesh);
+	    },
+
+	    getMaterial: function () {
+	      var map = this.materialOptions.map;
+	      var type = this.materialOptions.type;
+	      if (type === 'shaded') {
+	        return new THREE.MeshStandardMaterial({
+	          color: this.data.color,
+	          side: THREE.DoubleSide,
+	          map: map,
+	          transparent: true,
+	          alphaTest: 0.5,
+	          roughness: 0.75,
+	          metalness: 0.25
+	        });
+	      }
+	      return new THREE.MeshBasicMaterial({
+	        color: this.data.color,
+	        side: THREE.DoubleSide,
+	        map: map,
+	        transparent: true,
+	        alphaTest: 0.5
+	      });
+	    },
+
+	    addPoint: function (position, rotation, pointerPosition, pressure, timestamp) {
+	      // brush side
+	      var pi2 = Math.PI / 2;
+	      var dir = new THREE.Vector3();
+	      dir.set(1, 0, 0);
+	      dir.applyQuaternion(rotation);
+	      dir.normalize();
+
+	      // brush normal
+	      var axis = new THREE.Vector3();
+	      axis.set(0, 1, 0);
+	      axis.applyQuaternion(rotation);
+	      axis.normalize();
+
+	      var brushSize = this.data.size * pressure / 2;
+	      var brushAngle = Math.PI / 4 + Math.random() * this.angleJitter;
+
+	      if (this.autoRotate) {
+	        this.currAngle += 0.1;
+	        brushAngle += this.currAngle;
+	      }
+
+	      var a = pointerPosition.clone().add(dir.applyAxisAngle(axis, brushAngle).clone().multiplyScalar(brushSize));
+	      var b = pointerPosition.clone().add(dir.applyAxisAngle(axis, pi2).clone().multiplyScalar(brushSize));
+	      var c = pointerPosition.clone().add(dir.applyAxisAngle(axis, pi2).clone().multiplyScalar(brushSize));
+	      var d = pointerPosition.clone().add(dir.applyAxisAngle(axis, pi2).multiplyScalar(brushSize));
+
+	      var nidx = this.idx;
+	      // triangle 1
+	      this.vertices[ this.idx++ ] = a.x;
+	      this.vertices[ this.idx++ ] = a.y;
+	      this.vertices[ this.idx++ ] = a.z;
+
+	      this.vertices[ this.idx++ ] = b.x;
+	      this.vertices[ this.idx++ ] = b.y;
+	      this.vertices[ this.idx++ ] = b.z;
+
+	      this.vertices[ this.idx++ ] = c.x;
+	      this.vertices[ this.idx++ ] = c.y;
+	      this.vertices[ this.idx++ ] = c.z;
+
+	      // triangle 2
+
+	      this.vertices[ this.idx++ ] = c.x;
+	      this.vertices[ this.idx++ ] = c.y;
+	      this.vertices[ this.idx++ ] = c.z;
+
+	      this.vertices[ this.idx++ ] = d.x;
+	      this.vertices[ this.idx++ ] = d.y;
+	      this.vertices[ this.idx++ ] = d.z;
+
+	      this.vertices[ this.idx++ ] = a.x;
+	      this.vertices[ this.idx++ ] = a.y;
+	      this.vertices[ this.idx++ ] = a.z;
+
+	      // normals
+	      for (var i = 0; i < 6; i++) {
+	        this.normals[ nidx++ ] = axis.x;
+	        this.normals[ nidx++ ] = axis.y;
+	        this.normals[ nidx++ ] = axis.z;
+	      }
+
+	      // UVs
+	      var uv = this.data.numPoints * 6 * 2;
+
+	      // subTextures?
+	      var Umin = 0;
+	      var Umax = 1;
+	      if (this.subTextures > 1) {
+	        var subt = Math.floor(Math.random() * this.subTextures);
+	        Umin = 1.0 / this.subTextures * subt;
+	        Umax = Umin + 1.0 / this.subTextures;
+	      }
+	      // triangle 1 uv
+	      this.uvs[ uv++ ] = Umin;
+	      this.uvs[ uv++ ] = 1;
+	      this.uvs[ uv++ ] = Umin;
+	      this.uvs[ uv++ ] = 0;
+	      this.uvs[ uv++ ] = Umax;
+	      this.uvs[ uv++ ] = 0;
+
+	      // triangle2 uv
+	      this.uvs[ uv++ ] = Umax;
+	      this.uvs[ uv++ ] = 0;
+	      this.uvs[ uv++ ] = Umax;
+	      this.uvs[ uv++ ] = 1;
+	      this.uvs[ uv++ ] = Umin;
+	      this.uvs[ uv++ ] = 1;
+
+	      this.geometry.attributes.normal.needsUpdate = true;
+	      this.geometry.attributes.position.needsUpdate = true;
+	      this.geometry.attributes.uv.needsUpdate = true;
+
+	      this.geometry.setDrawRange(0, this.data.numPoints * 6);
+
+	      return true;
+	    }
+	  };
+
+	  var stamps = [
+	    {
+	      name: 'dots',
+	      materialOptions: {
+	        type: 'shaded',
+	        textureSrc: 'brushes/stamp_dots.png'
+	      },
+	      thumbnail: 'brushes/thumb_stamp_dots.gif',
+	      spacing: 0.01
+	    },
+	    {
+	      name: 'squares',
+	      materialOptions: {
+	        type: 'shaded',
+	        textureSrc: 'brushes/stamp_squares.png'
+	      },
+	      thumbnail: 'brushes/thumb_stamp_squares.gif',
+	      spacing: 0.01
+	    },
+	    {
+	      name: 'column',
+	      materialOptions: {
+	        type: 'shaded',
+	        autoRotate: true,
+	        textureSrc: 'brushes/stamp_column.png'
+	      },
+	      thumbnail: 'brushes/thumb_stamp_column.gif',
+	      spacing: 0.01
+	    },
+	    {
+	      name: 'gear1',
+	      materialOptions: {
+	        type: 'shaded',
+	        angleJitter: Math.PI * 2,
+	        subTextures: 2,
+	        textureSrc: 'brushes/stamp_gear.png'
+	      },
+	      thumbnail: 'brushes/thumb_stamp_gear.gif',
+	      spacing: 0.05
+	    },
+	    {
+	      name: 'grunge1',
+	      materialOptions: {
+	        type: 'shaded',
+	        angleJitter: Math.PI * 2,
+	        textureSrc: 'brushes/stamp_grunge1.png'
+	      },
+	      thumbnail: 'brushes/stamp_grunge1.png',
+	      spacing: 0.02
+	    },
+	    {
+	      name: 'grunge2',
+	      materialOptions: {
+	        type: 'shaded',
+	        angleJitter: Math.PI * 2,
+	        textureSrc: 'brushes/stamp_grunge2.png'
+	      },
+	      thumbnail: 'brushes/stamp_grunge2.png',
+	      spacing: 0.02
+	    },
+	    {
+	      name: 'grunge3',
+	      materialOptions: {
+	        type: 'shaded',
+	        angleJitter: Math.PI * 2,
+	        textureSrc: 'brushes/stamp_grunge3.png'
+	      },
+	      thumbnail: 'brushes/stamp_grunge3.png',
+	      spacing: 0.02
+	    },
+	    {
+	      name: 'grunge4',
+	      materialOptions: {
+	        type: 'shaded',
+	        angleJitter: Math.PI * 2,
+	        textureSrc: 'brushes/stamp_grunge4.png'
+	      },
+	      thumbnail: 'brushes/stamp_grunge4.png',
+	      spacing: 0.02
+	    },
+	    {
+	      name: 'grunge5',
+	      materialOptions: {
+	        type: 'shaded',
+	        angleJitter: Math.PI * 2,
+	        textureSrc: 'brushes/stamp_grunge5.png'
+	      },
+	      thumbnail: 'brushes/thumb_stamp_grunge5.gif',
+	      spacing: 0.02
+	    },
+	    {
+	      name: 'leaf1',
+	      materialOptions: {
+	        type: 'shaded',
+	        angleJitter: Math.PI,
+	        textureSrc: 'brushes/stamp_leaf1.png'
+	      },
+	      thumbnail: 'brushes/stamp_leaf1.png',
+	      spacing: 0.03
+	    },
+	    {
+	      name: 'leaf2',
+	      materialOptions: {
+	        type: 'shaded',
+	        angleJitter: 60 * Math.PI / 180.0,
+	        textureSrc: 'brushes/stamp_leaf2.png'
+	      },
+	      thumbnail: 'brushes/thumb_stamp_leaf2.gif',
+	      spacing: 0.03
+	    },
+	    {
+	      name: 'leaf3',
+	      materialOptions: {
+	        type: 'shaded',
+	        angleJitter: 60 * Math.PI / 180.0,
+	        textureSrc: 'brushes/stamp_leaf3.png'
+	      },
+	      thumbnail: 'brushes/thumb_stamp_leaf3.gif',
+	      spacing: 0.03
+	    },
+	    {
+	      name: 'fur1',
+	      materialOptions: {
+	        type: 'shaded',
+	        angleJitter: 40 * Math.PI / 180.0,
+	        subTextures: 2,
+	        textureSrc: 'brushes/stamp_fur1.png'
+	      },
+	      thumbnail: 'brushes/stamp_fur1.png',
+	      spacing: 0.01
+	    },
+	    {
+	      name: 'fur2',
+	      materialOptions: {
+	        type: 'shaded',
+	        angleJitter: 10 * Math.PI / 180.0,
+	        subTextures: 3,
+	        textureSrc: 'brushes/stamp_fur2.png'
+	      },
+	      thumbnail: 'brushes/stamp_fur2.png',
+	      spacing: 0.01
+	    },
+	    {
+	      name: 'grass',
+	      materialOptions: {
+	        type: 'shaded',
+	        angleJitter: 10 * Math.PI / 180.0,
+	        subTextures: 3,
+	        textureSrc: 'brushes/stamp_grass.png'
+	      },
+	      thumbnail: 'brushes/thumb_stamp_grass.png',
+	      spacing: 0.03
+	    },
+	    {
+	      name: 'bush',
+	      materialOptions: {
+	        type: 'shaded',
+	        subTextures: 2,
+	        textureSrc: 'brushes/stamp_bush.png'
+	      },
+	      thumbnail: 'brushes/thumb_stamp_bush.gif',
+	      spacing: 0.04
+	    },
+	    {
+	      name: 'star',
+	      materialOptions: {
+	        type: 'shaded',
+	        textureSrc: 'brushes/stamp_star.png'
+	      },
+	      thumbnail: 'brushes/thumb_stamp_star.png',
+	      spacing: 0.06
+	    },
+	    {
+	      name: 'snow',
+	      materialOptions: {
+	        type: 'shaded',
+	        angleJitter: Math.PI * 2,
+	        textureSrc: 'brushes/stamp_snow.png'
+	      },
+	      thumbnail: 'brushes/thumb_stamp_snow.png',
+	      spacing: 0.06
+	    }
+	  ];
+
+	  var textureLoader = new THREE.TextureLoader();
+	  for (var i = 0; i < stamps.length; i++) {
+	    var definition = stamps[i];
+	    if (definition.materialOptions.textureSrc) {
+	      definition.materialOptions.map = textureLoader.load(definition.materialOptions.textureSrc);
+	      delete definition.materialOptions.textureSrc;
+	    }
+	    AFRAME.registerBrush(definition.name, Object.assign({}, stamp, {materialOptions: definition.materialOptions}), {thumbnail: definition.thumbnail, spacing: definition.spacing, maxPoints: 3000});
+	  }
+
+	  /*
+	  - type: <'flat'|'shaded'>
+	    Flat: constant, just color. Shaded: phong shading with subtle speculars
+	  - autoRotate: <true|false>
+	    The brush rotates incrementally at 0.1rad per point
+	  - angleJitter: <r:float>
+	    The brush rotates randomly from -r to r
+	  - subTextures: <n:int>
+	    textureSrc is divided in n horizontal pieces, and the brush picks one randomly on each point
+	  */
+	})();
+
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports) {
+
+	/* globals AFRAME THREE */
+	AFRAME.registerBrush('spheres',
+	  {
+	    init: function (color, width) {
+	      // Initialize the material based on the stroke color
+	      this.material = new THREE.MeshStandardMaterial({
+	        color: this.data.color,
+	        roughness: 0.5,
+	        metalness: 0.5,
+	        side: THREE.DoubleSide,
+	        shading: THREE.FlatShading
+	      });
+	      this.geometry = new THREE.IcosahedronGeometry(1, 0);
+	    },
+	    // This function is called every time we need to add a point to our stroke
+	    // It should returns true if the point is added correctly, false otherwise.
+	    addPoint: function (position, orientation, pointerPosition, pressure, timestamp) {
+	      // Create a new sphere mesh to insert at the given position
+	      var sphere = new THREE.Mesh(this.geometry, this.material);
+
+	      // The scale is determined by the trigger preassure
+	      var sca = this.data.size / 2 * pressure;
+	      sphere.scale.set(sca, sca, sca);
+	      sphere.initialScale = sphere.scale.clone();
+
+	      // Generate a random phase to be used in the tick animation
+	      sphere.phase = Math.random() * Math.PI * 2;
+
+	      // Set the position of the sphere to match the controller positoin
+	      sphere.position.copy(pointerPosition);
+	      sphere.rotation.copy(orientation);
+
+	      // Add the sphere to the object3D
+	      this.object3D.add(sphere);
+
+	      // Return true as we've added correctly a new point (or sphere)
+	      return true;
+	    },
+	    // This function is called on every frame
+	    tick: function (time, delta) {
+	      for (var i = 0; i < this.object3D.children.length; i++) {
+	        var sphere = this.object3D.children[i];
+	        // Calculate the sine value based on the time and the phase for this sphere
+	        // and use it to scale the geometry
+	        var sin = (Math.sin(sphere.phase + time / 500.0) + 1) / 2 + 0.1;
+	        sphere.scale.copy(sphere.initialScale).multiplyScalar(sin);
+	      }
+	    }
+	  },
+	  // Define extra options for this brush
+	  {thumbnail: 'brushes/thumb_spheres.gif', spacing: 0.01}
+	);
+
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports) {
+
+	/* globals AFRAME THREE */
 	AFRAME.registerBrush('marbleBrush',
 	  {
 	    init: function (color, width) {
@@ -3614,7 +4346,7 @@
 
 
 /***/ }),
-/* 20 */
+/* 23 */
 /***/ (function(module, exports) {
 
 	/* globals AFRAME THREE */
@@ -3656,7 +4388,152 @@
 
 
 /***/ }),
-/* 21 */
+/* 24 */
+/***/ (function(module, exports) {
+
+	/* globals AFRAME THREE */
+	AFRAME.registerBrush('cubes',
+	  {
+	    init: function (color, width) {
+	      this.material = new THREE.MeshStandardMaterial({
+	        color: this.data.color,
+	        roughness: 0.5,
+	        metalness: 0.5,
+	        side: THREE.DoubleSide,
+	        shading: THREE.FlatShading
+	      });
+	      this.geometry = new THREE.BoxGeometry(1, 1, 1);
+	    },
+	    addPoint: function (position, orientation, pointerPosition, pressure, timestamp) {
+	      var box = new THREE.Mesh(this.geometry, this.material);
+
+	      var sca = pressure * this.data.size * Math.random();
+	      box.scale.set(sca, sca, sca);
+	      box.position.copy(pointerPosition);
+	      box.rotation.copy(orientation);
+
+	      this.object3D.add(box);
+
+	      return true;
+	    }
+	  },
+	  {thumbnail: 'brushes/thumb_cubes.gif', spacing: 0.01}
+	);
+
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports) {
+
+	/* globals AFRAME THREE */
+	(function(){
+	  var vertexShader = `
+	    varying vec2 vUv;
+	    void main() {
+	      vUv = uv;
+	      gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+	    }
+	  `;
+
+	  var fragmentShader = `
+	    uniform sampler2D tDiffuse;
+	    uniform float amount;
+	    uniform float time;
+	    varying vec2 vUv;
+
+	    vec3 hsv2rgb(vec3 c) {
+	        vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+	        vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+	        return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+	    }
+
+	    void main() {
+	      float h = mod(vUv.x - time / 3000.0, 1.0);
+	      vec4 color = vec4(hsv2rgb(vec3(h, 1.0, 0.5)), 1.0);
+	      gl_FragColor = color;
+	    }
+	  `;
+
+	  var material = new THREE.ShaderMaterial({
+	    vertexShader: vertexShader,
+	    fragmentShader: fragmentShader,
+	    side: THREE.DoubleSide,
+	    uniforms: {
+	      time: {type: 'f', value: 0}
+	    }
+	  });
+
+	  AFRAME.registerBrush('line-rainbow',
+	    {
+	      init: function (color, brushSize) {
+	        this.idx = 0;
+	        this.geometry = new THREE.BufferGeometry();
+	        this.vertices = new Float32Array(this.options.maxPoints * 3 * 3);
+	        this.uvs = new Float32Array(this.options.maxPoints * 2 * 2);
+	        this.linepositions = new Float32Array(this.options.maxPoints);
+
+	        this.geometry.setDrawRange(0, 0);
+	        this.geometry.addAttribute('position', new THREE.BufferAttribute(this.vertices, 3).setDynamic(true));
+	        this.geometry.addAttribute('uv', new THREE.BufferAttribute(this.uvs, 2).setDynamic(true));
+	        this.geometry.addAttribute('lineposition', new THREE.BufferAttribute(this.linepositions, 1).setDynamic(true));
+
+	        this.material = material;
+	        var mesh = new THREE.Mesh(this.geometry, this.material);
+	        mesh.drawMode = THREE.TriangleStripDrawMode;
+
+	        mesh.frustumCulled = false;
+	        mesh.vertices = this.vertices;
+
+	        this.object3D.add(mesh);
+	      },
+	      addPoint: function (position, orientation, pointerPosition, pressure, timestamp) {
+	        var uv = 0;
+	        for (i = 0; i < this.data.numPoints; i++) {
+	          this.uvs[ uv++ ] = i / (this.data.numPoints - 1);
+	          this.uvs[ uv++ ] = 0;
+
+	          this.uvs[ uv++ ] = i / (this.data.numPoints - 1);
+	          this.uvs[ uv++ ] = 1;
+	        }
+
+	        var direction = new THREE.Vector3();
+	        direction.set(1, 0, 0);
+	        direction.applyQuaternion(orientation);
+	        direction.normalize();
+
+	        var posA = pointerPosition.clone();
+	        var posB = pointerPosition.clone();
+	        var brushSize = this.data.size * pressure;
+	        posA.add(direction.clone().multiplyScalar(brushSize / 2));
+	        posB.add(direction.clone().multiplyScalar(-brushSize / 2));
+
+	        this.vertices[ this.idx++ ] = posA.x;
+	        this.vertices[ this.idx++ ] = posA.y;
+	        this.vertices[ this.idx++ ] = posA.z;
+
+	        this.vertices[ this.idx++ ] = posB.x;
+	        this.vertices[ this.idx++ ] = posB.y;
+	        this.vertices[ this.idx++ ] = posB.z;
+
+	        this.geometry.attributes.position.needsUpdate = true;
+	        this.geometry.attributes.uv.needsUpdate = true;
+
+	        this.geometry.setDrawRange(0, this.data.numPoints * 2);
+
+	        return true;
+	      },
+
+	      tick: function(timeOffset, delta) {
+	        this.material.uniforms.time.value = timeOffset;
+	      },
+	    },
+	    {thumbnail:'brushes/thumb_rainbow.png', maxPoints: 3000}
+	  );
+	})();
+
+
+/***/ }),
+/* 26 */
 /***/ (function(module, exports) {
 
 	/* globals AFRAME THREE */
