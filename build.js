@@ -51,13 +51,12 @@
 	__webpack_require__(6);
 
 	__webpack_require__(7);
-	// require('./ui2d.js');
-
 	__webpack_require__(8);
+
 	__webpack_require__(9);
 	__webpack_require__(10);
-
 	__webpack_require__(11);
+
 	__webpack_require__(12);
 	__webpack_require__(13);
 	__webpack_require__(14);
@@ -66,13 +65,14 @@
 	__webpack_require__(17);
 	__webpack_require__(18);
 	__webpack_require__(19);
-
 	__webpack_require__(20);
+
 	__webpack_require__(21);
 	__webpack_require__(22);
 	__webpack_require__(23);
 	__webpack_require__(24);
 	__webpack_require__(25);
+	__webpack_require__(26);
 
 
 /***/ }),
@@ -1340,6 +1340,40 @@
 /* 8 */
 /***/ (function(module, exports) {
 
+	/* global Clipboard */
+	window.addEventListener('load', function (event) {
+	  var apainterUI = document.getElementById('apainter-ui');
+	  var shareDiv = document.querySelector('#apainter-ui .share');
+	  var shareUrl = document.getElementById('apainter-share-url');
+	  var progressDiv = document.querySelector('#apainter-ui .progress');
+	  var progressBar = document.querySelector('#apainter-ui .bar');
+	  document.addEventListener('drawing-upload-completed', function (event) {
+	    shareDiv.classList.remove('hide');
+	    progressDiv.classList.add('hide');
+	    shareUrl.value = event.detail.url;
+	  });
+
+	  document.addEventListener('drawing-upload-started', function (event) {
+	    apainterUI.style.display = 'block';
+	    shareDiv.classList.add('hide');
+	    progressDiv.classList.remove('hide');
+	  });
+
+	  document.addEventListener('drawing-upload-progress', function (event) {
+	    progressBar.style.width = Math.floor(event.detail.progress * 100) + '%';
+	  });
+
+	  // var clipboard = new Clipboard('.button.copy');
+	  // clipboard.on('error', function (e) {
+	  //   console.error('Error copying to clipboard:', e.action, e.trigger);
+	  // });
+	});
+
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports) {
+
 	/* globals AFRAME THREE BinaryManager */
 	var VERSION = 1;
 
@@ -1735,7 +1769,7 @@
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports) {
 
 	/* globals AFRAME */
@@ -1769,7 +1803,7 @@
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* global AFRAME Blob uploadcare */
@@ -1952,7 +1986,7 @@
 
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports) {
 
 	/* globals AFRAME THREE */
@@ -2058,7 +2092,7 @@
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports) {
 
 	/* global AFRAME */
@@ -2101,7 +2135,7 @@
 
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports) {
 
 	/* globals AFRAME THREE */
@@ -2134,7 +2168,7 @@
 
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports) {
 
 	/* globals AFRAME THREE */
@@ -2170,7 +2204,7 @@
 
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports) {
 
 	AFRAME.registerComponent('look-controls-alt', {
@@ -2290,7 +2324,7 @@
 
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports) {
 
 	AFRAME.registerComponent('orbit-controls', {
@@ -2367,7 +2401,7 @@
 
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports) {
 
 	AFRAME.registerSystem('paint-controls', {
@@ -2582,7 +2616,7 @@
 
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports) {
 
 	/* globals AFRAME THREE */
@@ -3515,7 +3549,7 @@
 
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports) {
 
 	/* globals AFRAME THREE */
@@ -3680,7 +3714,7 @@
 
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports) {
 
 	/* globals AFRAME THREE */
@@ -3983,7 +4017,7 @@
 
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports) {
 
 	/* global AFRAME THREE */
@@ -4354,7 +4388,7 @@
 
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports) {
 
 	/* globals AFRAME THREE */
@@ -4412,7 +4446,7 @@
 
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports) {
 
 	/* globals AFRAME THREE */
@@ -4446,7 +4480,7 @@
 
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports) {
 
 	/* globals AFRAME THREE */
@@ -4557,7 +4591,7 @@
 
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports) {
 
 	/* globals AFRAME THREE */
