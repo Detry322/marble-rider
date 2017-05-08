@@ -720,11 +720,9 @@ AFRAME.registerComponent('ui', {
       this.system.closeAll();
       this.open();
       this.system.opened = this.el;
-      console.log("MENU OPENED");
     } else {
       this.close();
       this.system.opened = undefined;
-      console.log("MENU CLOSED");
     }
   },
 
