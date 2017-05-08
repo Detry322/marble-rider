@@ -73,6 +73,7 @@
 	__webpack_require__(22);
 	__webpack_require__(23);
 	__webpack_require__(24);
+	__webpack_require__(25);
 
 
 /***/ }),
@@ -1853,7 +1854,7 @@
 	  schema: {
 	    color: {type: 'color', default: '#ef2d5e'},
 	    size: {default: 0.01, min: 0.001, max: 0.3},
-	    brush: {default: 'flat'},
+	    brush: {default: 'marbleBrush'},
 	    enabled: { default: true }
 	  },
 	  init: function () {
@@ -4309,6 +4310,40 @@
 /***/ (function(module, exports) {
 
 	/* globals AFRAME THREE */
+	AFRAME.registerBrush('marbleBrush',
+	  {
+	    init: function (color, width) {
+	      this.material = new THREE.MeshStandardMaterial({
+	        color: this.data.color,
+	        roughness: 0.5,
+	        metalness: 0.5,
+	        side: THREE.DoubleSide,
+	        shading: THREE.FlatShading
+	      });
+	      this.geometry = new THREE.SphereGeometry(1);
+	    },
+	    addPoint: function (position, orientation, pointerPosition, pressure, timestamp) {
+	      var box = new THREE.Mesh(this.geometry, this.material);
+
+	      var sca = pressure * this.data.size * Math.random();
+	      box.scale.set(sca, sca, sca);
+	      box.position.copy(pointerPosition);
+	      box.rotation.copy(orientation);
+
+	      this.object3D.add(box);
+
+	      return true;
+	    }
+	  },
+	  {thumbnail: 'brushes/thumb_cubes.gif', spacing: 0.01}
+	);
+
+
+/***/ }),
+/* 23 */
+/***/ (function(module, exports) {
+
+	/* globals AFRAME THREE */
 	AFRAME.registerBrush('cubes',
 	  {
 	    init: function (color, width) {
@@ -4339,7 +4374,7 @@
 
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports) {
 
 	/* globals AFRAME THREE */
@@ -4450,7 +4485,7 @@
 
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports) {
 
 	/* globals AFRAME THREE */
