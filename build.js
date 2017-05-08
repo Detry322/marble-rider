@@ -1466,6 +1466,7 @@
 
 	    var entity = document.createElement('a-entity');
 	    entity.className = "a-stroke";
+	    entity.setAttribute('dynamic-body', '');
 	    document.querySelector('a-scene').appendChild(entity);
 	    entity.setObject3D('mesh', stroke.object3D);
 	    stroke.entity = entity;
@@ -1855,7 +1856,7 @@
 	  schema: {
 	    color: {type: 'color', default: '#ef2d5e'},
 	    size: {default: 0.01, min: 0.001, max: 0.3},
-	    brush: {default: 'lineBrush'},
+	    brush: {default: 'line'},
 	    enabled: { default: true }
 	  },
 	  init: function () {
