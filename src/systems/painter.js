@@ -65,9 +65,6 @@ AFRAME.registerSystem('painter', {
           .to({alpha: 0.0}, 4000)
           .onComplete(function () {
             logo.setAttribute('visible', false);
-          })
-          .onUpdate(function () {
-            mesh.children[0].material.opacity = this.alpha;
           }).start();
         self.startPainting = true;
       }
