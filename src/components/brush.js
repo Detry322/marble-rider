@@ -63,7 +63,9 @@ AFRAME.registerComponent('brush', {
         } else {
           if (self.active) {
             self.previousEntity = self.currentEntity;
-            console.log(self);
+            if (this.currentStroke) {
+              this.currentStroke.entity.setAttribute('dynamic-body', '');
+            }
             self.currentStroke = null;
           }
           self.active = false;
