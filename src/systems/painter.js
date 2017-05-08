@@ -29,7 +29,7 @@ AFRAME.registerSystem('painter', {
       this.brushSystem.loadFromUrl(urlParams.url || urlParams.urljson, isBinary);
       document.getElementById('logo').setAttribute('visible', false);
       document.getElementById('acamera').setAttribute('orbit-controls', 'position', '0 1.6 3');
-      document.getElementById('apainter-logo').classList.remove('hidden');
+      // document.getElementById('apainter-logo').classList.remove('hidden');
       //document.getElementById('apainter-author').classList.remove('hidden'); // not used yet
     }
 
@@ -60,7 +60,6 @@ AFRAME.registerSystem('painter', {
     document.addEventListener('stroke-started', function (event) {
       if (!self.startPainting) {
         var logo = document.getElementById('logo');
-        var mesh = logo.getObject3D('mesh');
         var tween = new AFRAME.TWEEN.Tween({ alpha: 1.0 })
           .to({alpha: 0.0}, 4000)
           .onComplete(function () {
@@ -115,60 +114,58 @@ AFRAME.registerSystem('painter', {
         }
       }
     });
-
-    console.info('A-PAINTER Version: ' + this.version);
   },
-  saveJSON: function () {
-    var json = this.brushSystem.getJSON();
-    var blob = new Blob([JSON.stringify(json)], {type: 'application/json'});
-    saveAs(blob, 'demo.json');
-  },
-  save: function () {
-    var dataviews = this.brushSystem.getBinary();
-    var blob = new Blob(dataviews, {type: 'application/octet-binary'});
-    saveAs(blob, 'demo.apa');
-  },
-  upload: function (success, error) {
-    this.sceneEl.emit('drawing-upload-started');
-    var self = this;
+  // saveJSON: function () {
+  //   var json = this.brushSystem.getJSON();
+  //   var blob = new Blob([JSON.stringify(json)], {type: 'application/json'});
+  //   saveAs(blob, 'demo.json');
+  // },
+  // save: function () {
+  //   var dataviews = this.brushSystem.getBinary();
+  //   var blob = new Blob(dataviews, {type: 'application/octet-binary'});
+  //   saveAs(blob, 'demo.apa');
+  // },
+  // upload: function (success, error) {
+  //   this.sceneEl.emit('drawing-upload-started');
+  //   var self = this;
 
-    var baseUrl = 'https://aframe.io/a-painter/?url=';
+  //   var baseUrl = 'https://aframe.io/a-painter/?url=';
 
-    var dataviews = this.brushSystem.getBinary();
-    var blob = new Blob(dataviews, {type: 'application/octet-binary'});
-    var uploader = 'uploadcare'; // or 'fileio'
-    if (uploader === 'fileio') {
-      // Using file.io
-      var fd = new window.FormData();
-      fd.append('file', blob);
-      var xhr = new window.XMLHttpRequest();
-      xhr.open('POST', 'https://file.io'); // ?expires=1y
-      xhr.onreadystatechange = function (data) {
-        if (xhr.readyState === 4) {
-          var response = JSON.parse(xhr.response);
-          if (response.success) {
-            console.log('Uploaded link: ', baseUrl + response.link);
-            self.sceneEl.emit('drawing-upload-completed', {url: baseUrl + response.link});
-            if (success) { success(); }
-          }
-        } else {
-          self.sceneEl.emit('drawing-upload-error', {errorInfo: null, fileInfo: null});
-          if (error) { error(); }
-        }
-      };
-      xhr.send(fd);
-    } else {
-      var file = uploadcare.fileFrom('object', blob);
-      file.done(function (fileInfo) {
-        console.log('Uploaded link: ', baseUrl + fileInfo.cdnUrl);
-        self.sceneEl.emit('drawing-upload-completed', {url: baseUrl + fileInfo.cdnUrl});
-        if (success) { success(); }
-      }).fail(function (errorInfo, fileInfo) {
-        self.sceneEl.emit('drawing-upload-error', {errorInfo: errorInfo, fileInfo: fileInfo});
-        if (error) { error(errorInfo); }
-      }).progress(function (uploadInfo) {
-        self.sceneEl.emit('drawing-upload-progress', {progress: uploadInfo.progress});
-      });
-    }
-  }
+  //   var dataviews = this.brushSystem.getBinary();
+  //   var blob = new Blob(dataviews, {type: 'application/octet-binary'});
+  //   var uploader = 'uploadcare'; // or 'fileio'
+  //   if (uploader === 'fileio') {
+  //     // Using file.io
+  //     var fd = new window.FormData();
+  //     fd.append('file', blob);
+  //     var xhr = new window.XMLHttpRequest();
+  //     xhr.open('POST', 'https://file.io'); // ?expires=1y
+  //     xhr.onreadystatechange = function (data) {
+  //       if (xhr.readyState === 4) {
+  //         var response = JSON.parse(xhr.response);
+  //         if (response.success) {
+  //           console.log('Uploaded link: ', baseUrl + response.link);
+  //           self.sceneEl.emit('drawing-upload-completed', {url: baseUrl + response.link});
+  //           if (success) { success(); }
+  //         }
+  //       } else {
+  //         self.sceneEl.emit('drawing-upload-error', {errorInfo: null, fileInfo: null});
+  //         if (error) { error(); }
+  //       }
+  //     };
+  //     xhr.send(fd);
+  //   } else {
+  //     var file = uploadcare.fileFrom('object', blob);
+  //     file.done(function (fileInfo) {
+  //       console.log('Uploaded link: ', baseUrl + fileInfo.cdnUrl);
+  //       self.sceneEl.emit('drawing-upload-completed', {url: baseUrl + fileInfo.cdnUrl});
+  //       if (success) { success(); }
+  //     }).fail(function (errorInfo, fileInfo) {
+  //       self.sceneEl.emit('drawing-upload-error', {errorInfo: errorInfo, fileInfo: fileInfo});
+  //       if (error) { error(errorInfo); }
+  //     }).progress(function (uploadInfo) {
+  //       self.sceneEl.emit('drawing-upload-progress', {progress: uploadInfo.progress});
+  //     });
+  //   }
+  // }
 });
