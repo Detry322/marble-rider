@@ -4356,7 +4356,7 @@
 	        side: THREE.FrontSide,
 	        shading: THREE.SmoothShading
 	      });
-	      this.geometry = new THREE.CubeGeometry(1, 1, 1);
+	      this.geometry = new THREE.CubeGeometry(0.1, 0.1, 1);
 	      this.mesh = new THREE.Mesh(this.geometry, this.material);
 	      this.object3D.add(this.mesh);
 	      this.mesh.visible = false
@@ -4369,6 +4369,9 @@
 	      this.mesh.visible = true
 	      var distance = this.firstPoint.distanceTo(pointerPosition);
 	      this.mesh.scale.set(1, 1, distance);
+	      this.mesh.position.x = (this.firstPoint.x + this.pointerPosition.x)/2;
+	      this.mesh.position.y = (this.firstPoint.y + this.pointerPosition.y)/2;
+	      this.mesh.position.z = (this.firstPoint.z + this.pointerPosition.z)/2;
 	      this.mesh.lookAt(pointerPosition)
 	      return true;
 	    }
