@@ -1,11 +1,11 @@
 window.saveAs = require('../vendor/saveas.js').saveAs;
 
-require('./dragndrop.js');
+// require('./dragndrop.js');
 require('./binarymanager.js');
 require('../vendor/OrbitControls.js');
 
 require('./utils.js');
-require('./ui2d.js');
+// require('./ui2d.js');
 
 require('./systems/brush.js');
 require('./systems/ui.js');

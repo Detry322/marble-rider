@@ -46,17 +46,19 @@
 
 	window.saveAs = __webpack_require__(1).saveAs;
 
+	// require('./dragndrop.js');
 	__webpack_require__(4);
 	__webpack_require__(5);
+
 	__webpack_require__(6);
+	// require('./ui2d.js');
 
 	__webpack_require__(7);
 	__webpack_require__(8);
-
 	__webpack_require__(9);
+
 	__webpack_require__(10);
 	__webpack_require__(11);
-
 	__webpack_require__(12);
 	__webpack_require__(13);
 	__webpack_require__(14);
@@ -64,15 +66,13 @@
 	__webpack_require__(16);
 	__webpack_require__(17);
 	__webpack_require__(18);
+
 	__webpack_require__(19);
 	__webpack_require__(20);
-
 	__webpack_require__(21);
 	__webpack_require__(22);
 	__webpack_require__(23);
 	__webpack_require__(24);
-	__webpack_require__(25);
-	__webpack_require__(26);
 
 
 /***/ }),
@@ -100,107 +100,6 @@
 
 /***/ }),
 /* 4 */
-/***/ (function(module, exports) {
-
-	/* globals AFRAME Image FileReader */
-	window.addEventListener('load', function (event) {
-	  var dropArea = document.body;
-
-	  dropArea.addEventListener('dragover', function (event) {
-	    event.stopPropagation();
-	    event.preventDefault();
-	    event.dataTransfer.dropEffect = 'copy';
-	  }, false);
-
-	  dropArea.addEventListener('drop', function (event) {
-	    event.stopPropagation();
-	    event.preventDefault();
-
-	    // for each dropped file
-	    var files = event.dataTransfer.files;
-	    for (var i = 0; i < files.length; i++) {
-	      var file = files[i];
-
-	      if (file.name.substr(file.name.length - 4).toLowerCase() === '.apa') {
-	        // a-painter binary
-	        var reader = new FileReader();
-
-	        // file read, parse obj and add to the scene
-	        reader.onload = function (event) {
-	          document.querySelector('a-scene').systems.brush.loadBinary(event.target.result);
-	        };
-	        reader.readAsArrayBuffer(file);
-	      }
-	      else if (file.name.substr(file.name.length - 5).toLowerCase() === '.json') {
-	        // a-painter json
-	        var reader = new FileReader();
-
-	        // file read, parse obj and add to the scene
-	        reader.onload = function (event) {
-	          document.querySelector('a-scene').systems.brush.loadJSON(JSON.parse(event.target.result));
-	        };
-	        reader.readAsText(file);
-	      } 
-	      else if (file.name.substr(file.name.length - 4).toLowerCase() === '.obj') {
-	        // OBJs
-	        reader = new FileReader();
-
-	        // file read, parse obj and add to the scene
-	        reader.onload = function (event) {
-	          var objloader = new AFRAME.THREE.OBJLoader();
-	          var mesh = objloader.parse(event.target.result);
-
-	          var entity = document.createElement('a-entity');
-	          // set all mesh objects to dark gray
-	          for (var o = 0; o < mesh.children.length; o++) {
-	            var child = mesh.children[o];
-	            child.material.color.set('#333');
-	          }
-	          // add mesh to entity
-	          entity.setObject3D('mesh', mesh);
-	          entity.className = 'templateitem';
-	          document.querySelector('a-scene').appendChild(entity);
-	        };
-	        reader.readAsText(file);
-	      } else if (file.type.match(/image.*/)) {
-	        // dropping images
-	        reader = new FileReader();
-	        reader.onload = function (event) {
-	          // create img to get its size
-	          var img = new Image();
-	          img.src = event.target.result;
-
-	          // find good image size
-	          var width, height;
-	          if (img.width > img.height) {
-	            width = 1.0;
-	            height = img.height / img.width;
-	          } else {
-	            height = 1.0;
-	            width = img.width / img.height;
-	          }
-
-	          // find a random position in a side of the room
-	          var pos = [Math.random() * 3 - 1.5, 1 + Math.random() - 0.5, -1.4 + Math.random() * 0.2];
-
-	          // create a-image entity and set attributes
-	          var entity = document.createElement('a-image');
-	          entity.setAttribute('src', event.target.result);
-	          entity.setAttribute('position', pos.join(' '));
-	          entity.setAttribute('width', width);
-	          entity.setAttribute('height', height);
-	          entity.className = 'templateitem';
-	          document.querySelector('a-scene').appendChild(entity);
-	        };
-	        reader.readAsDataURL(file);
-	      }
-	    }
-	  }, false);
-	});
-
-
-/***/ }),
-/* 5 */
 /***/ (function(module, exports) {
 
 	/* globals THREE */
@@ -303,7 +202,7 @@
 
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ (function(module, exports) {
 
 	/**
@@ -1321,7 +1220,7 @@
 
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, exports) {
 
 	Number.prototype.toNumFixed = function (num) {
@@ -1337,41 +1236,7 @@
 
 
 /***/ }),
-/* 8 */
-/***/ (function(module, exports) {
-
-	/* global Clipboard */
-	window.addEventListener('load', function (event) {
-	  var apainterUI = document.getElementById('apainter-ui');
-	  var shareDiv = document.querySelector('#apainter-ui .share');
-	  var shareUrl = document.getElementById('apainter-share-url');
-	  var progressDiv = document.querySelector('#apainter-ui .progress');
-	  var progressBar = document.querySelector('#apainter-ui .bar');
-	  document.addEventListener('drawing-upload-completed', function (event) {
-	    shareDiv.classList.remove('hide');
-	    progressDiv.classList.add('hide');
-	    shareUrl.value = event.detail.url;
-	  });
-
-	  document.addEventListener('drawing-upload-started', function (event) {
-	    apainterUI.style.display = 'block';
-	    shareDiv.classList.add('hide');
-	    progressDiv.classList.remove('hide');
-	  });
-
-	  document.addEventListener('drawing-upload-progress', function (event) {
-	    progressBar.style.width = Math.floor(event.detail.progress * 100) + '%';
-	  });
-
-	  var clipboard = new Clipboard('.button.copy');
-	  clipboard.on('error', function (e) {
-	    console.error('Error copying to clipboard:', e.action, e.trigger);
-	  });
-	});
-
-
-/***/ }),
-/* 9 */
+/* 7 */
 /***/ (function(module, exports) {
 
 	/* globals AFRAME THREE BinaryManager */
@@ -1769,7 +1634,7 @@
 
 
 /***/ }),
-/* 10 */
+/* 8 */
 /***/ (function(module, exports) {
 
 	/* globals AFRAME */
@@ -1803,7 +1668,7 @@
 
 
 /***/ }),
-/* 11 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/* global AFRAME Blob uploadcare */
@@ -1986,7 +1851,7 @@
 
 
 /***/ }),
-/* 12 */
+/* 10 */
 /***/ (function(module, exports) {
 
 	/* globals AFRAME THREE */
@@ -2092,7 +1957,7 @@
 
 
 /***/ }),
-/* 13 */
+/* 11 */
 /***/ (function(module, exports) {
 
 	/* global AFRAME */
@@ -2135,7 +2000,7 @@
 
 
 /***/ }),
-/* 14 */
+/* 12 */
 /***/ (function(module, exports) {
 
 	/* globals AFRAME THREE */
@@ -2168,7 +2033,7 @@
 
 
 /***/ }),
-/* 15 */
+/* 13 */
 /***/ (function(module, exports) {
 
 	/* globals AFRAME THREE */
@@ -2204,7 +2069,7 @@
 
 
 /***/ }),
-/* 16 */
+/* 14 */
 /***/ (function(module, exports) {
 
 	AFRAME.registerComponent('look-controls-alt', {
@@ -2324,7 +2189,7 @@
 
 
 /***/ }),
-/* 17 */
+/* 15 */
 /***/ (function(module, exports) {
 
 	AFRAME.registerComponent('orbit-controls', {
@@ -2401,7 +2266,7 @@
 
 
 /***/ }),
-/* 18 */
+/* 16 */
 /***/ (function(module, exports) {
 
 	AFRAME.registerSystem('paint-controls', {
@@ -2616,7 +2481,7 @@
 
 
 /***/ }),
-/* 19 */
+/* 17 */
 /***/ (function(module, exports) {
 
 	/* globals AFRAME THREE */
@@ -3549,7 +3414,7 @@
 
 
 /***/ }),
-/* 20 */
+/* 18 */
 /***/ (function(module, exports) {
 
 	/* globals AFRAME THREE */
@@ -3714,7 +3579,7 @@
 
 
 /***/ }),
-/* 21 */
+/* 19 */
 /***/ (function(module, exports) {
 
 	/* globals AFRAME THREE */
@@ -4017,7 +3882,7 @@
 
 
 /***/ }),
-/* 22 */
+/* 20 */
 /***/ (function(module, exports) {
 
 	/* global AFRAME THREE */
@@ -4388,7 +4253,7 @@
 
 
 /***/ }),
-/* 23 */
+/* 21 */
 /***/ (function(module, exports) {
 
 	/* globals AFRAME THREE */
@@ -4446,7 +4311,7 @@
 
 
 /***/ }),
-/* 24 */
+/* 22 */
 /***/ (function(module, exports) {
 
 	/* globals AFRAME THREE */
@@ -4480,7 +4345,7 @@
 
 
 /***/ }),
-/* 25 */
+/* 23 */
 /***/ (function(module, exports) {
 
 	/* globals AFRAME THREE */
@@ -4591,7 +4456,7 @@
 
 
 /***/ }),
-/* 26 */
+/* 24 */
 /***/ (function(module, exports) {
 
 	/* globals AFRAME THREE */
