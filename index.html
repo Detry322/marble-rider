@@ -11,21 +11,20 @@
   <a-scene physics-world="gravity: 0 -9.8 0">
     <a-assets>
       <img id="skyTexture" src="assets/images/sky.jpg">
-      <img id="groundTexture" src="assets/images/floor.jpg">
-      <img id="sphereTexture" src="https://i.imgur.com/mYmmbrp.jpg">
+      <img id="groundTexture" src="assets/images/ground.jpg">
     </a-assets>
-
+    
     <a-light type="point" light="color: #fff; intensity:0.6" position="3 10 1"></a-light>
     <a-light type="point" light="color: #fff; intensity:0.2" position="-3 -10 0"></a-light>
-    <a-light type="hemisphere" groundColor="#888" intensity="0.8"></a-light>
-    
+    <a-light type="hemisphere" intensity="0.8"></a-light>
+
     <a-sky color="#aeaeae"></a-sky>
     <a-entity id="sky" geometry="primitive:sphere; radius:30; phiLength:360; phiStart:0; thetaLength:90" material="shader:flat; side:back; src:#skyTexture"></a-sky>
     <a-entity id="ground" geometry="primitive: box; width: 12; height: 0.01; depth: 12" physics-body="boundingBox: 20 0.1 20; mass: 0; velocity: 0 0 0" material="shader: flat; src: #groundTexture"></a-entity>
     
     <a-text id="logo" value="Marble Rider!" color="#000000" position="-1.3 1.6 -4" scale="2 2 2"></a-text>
 
-    <!-- <a-entity physics-body="boundingBox: .5 .5 .5; mass: 5; velocity: 0 7 0.2" 
+    <a-entity physics-body="boundingBox: .5 .5 .5; mass: 5; velocity: 0 7 0.2" 
       geometry="primitive: box; depth: .5; height: .5; width: .5;" material="color: red" position="1.5 3 -5"></a-entity>
     <a-entity physics-body="boundingBox: .5 .5 .5; mass: 5; velocity: 0 7 0" 
       geometry="primitive: box; depth: .5; height: .5; width: .5;" material="color: green" position="1 5 -5"></a-entity>
@@ -94,7 +93,7 @@
     <a-entity physics-body="boundingBox: .5 .5 .5; mass: 5; velocity: -0.106725727152 7 0.185747236182" 
       geometry="primitive: box; depth: .5; height: .5; width: .5;" material="color: red" position="4.33120908335 8.06133584134 2.32379036595"></a-entity>
     <a-entity physics-body="boundingBox: .5 .5 .5; mass: 5; velocity: 0.195162722273 7 -0.0399895130312" 
-      geometry="primitive: box; depth: .5; height: .5; width: .5;" material="color: blue" position="-2.9961095067 6.97430625221 1.91468506715"></a-entity> -->
+      geometry="primitive: box; depth: .5; height: .5; width: .5;" material="color: blue" position="-2.9961095067 6.97430625221 1.91468506715"></a-entity>
 
     <a-entity id="left-hand"
               brush
