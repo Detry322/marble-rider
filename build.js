@@ -1466,7 +1466,6 @@
 
 	    var entity = document.createElement('a-entity');
 	    entity.className = "a-stroke";
-	    entity.setAttribute('dynamic-body', '');
 	    document.querySelector('a-scene').appendChild(entity);
 	    entity.setObject3D('mesh', stroke.object3D);
 	    stroke.entity = entity;
@@ -1915,10 +1914,8 @@
 	          }
 	        } else {
 	          if (self.active) {
-	            if (self.finishStroke) {
-	              self.finishStroke();
-	            }
 	            self.previousEntity = self.currentEntity;
+	            self.previousEntity.setAttribute('dynamic-body', '');
 	            self.currentStroke = null;
 	          }
 	          self.active = false;
