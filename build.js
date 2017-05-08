@@ -74,6 +74,7 @@
 	__webpack_require__(23);
 	__webpack_require__(24);
 	__webpack_require__(25);
+	__webpack_require__(26);
 
 
 /***/ }),
@@ -1854,7 +1855,7 @@
 	  schema: {
 	    color: {type: 'color', default: '#ef2d5e'},
 	    size: {default: 0.01, min: 0.001, max: 0.3},
-	    brush: {default: 'marbleBrush'},
+	    brush: {default: 'lineBrush'},
 	    enabled: { default: true }
 	  },
 	  init: function () {
@@ -4345,6 +4346,45 @@
 /***/ (function(module, exports) {
 
 	/* globals AFRAME THREE */
+	AFRAME.registerBrush('lineBrush',
+	  {
+	    init: function (color, width) {
+	      this.material = new THREE.MeshStandardMaterial({
+	        color: this.data.color,
+	        roughness: 0.6,
+	        metalness: 0.2,
+	        side: THREE.FrontSide,
+	        shading: THREE.SmoothShading
+	      });
+	      this.geometry = new THREE.CubeGeometry(0.1, 0.1, 1);
+	      this.mesh = new THREE.Mesh(this.geometry, this.material);
+	      this.object3D.add(this.mesh);
+	      this.mesh.visible = false
+	    },
+	    addPoint: function (position, orientation, pointerPosition, pressure, timestamp) {
+	      if (!this.firstPoint) {
+	        this.firstPoint = pointerPosition.clone();
+	        this.mesh.position.set(this.firstPoint.x, this.firstPoint.y, this.firstPoint.z)
+	      }
+	      this.mesh.visible = true
+	      var distance = this.firstPoint.distanceTo(pointerPosition);
+	      this.mesh.scale.set(1, 1, distance);
+	      this.mesh.position.x = (this.firstPoint.x + pointerPosition.x)/2;
+	      this.mesh.position.y = (this.firstPoint.y + pointerPosition.y)/2;
+	      this.mesh.position.z = (this.firstPoint.z + pointerPosition.z)/2;
+	      this.mesh.lookAt(pointerPosition)
+	      return true;
+	    }
+	  },
+	  {thumbnail: 'brushes/thumb_single_sphere.png', spacing: 0.0}
+	);
+
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports) {
+
+	/* globals AFRAME THREE */
 	AFRAME.registerBrush('cubes',
 	  {
 	    init: function (color, width) {
@@ -4375,7 +4415,7 @@
 
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports) {
 
 	/* globals AFRAME THREE */
@@ -4486,7 +4526,7 @@
 
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports) {
 
 	/* globals AFRAME THREE */
