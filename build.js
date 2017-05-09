@@ -1917,6 +1917,7 @@
 	            self.previousEntity = self.currentEntity;
 	            if (self.currentStroke) {
 	              self.currentStroke.entity.setAttribute('dynamic-body', '');
+	              console.log(self);
 	            }
 	            self.currentStroke = null;
 	          }
