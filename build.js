@@ -1915,10 +1915,13 @@
 	          if (self.active) {
 	            self.previousEntity = self.currentEntity;
 	            if (self.currentStroke) {
-	              if (self.data.bush == 'marbleBrush') {
+	              if (self.data.brush == 'marbleBrush') {
 	                self.currentStroke.entity.setAttribute('dynamic-body', '');
 	              } else if (self.data.brush == 'lineBrush') {
 	                self.currentStroke.entity.setAttribute('static-body', '');
+	              }
+	              if (self.currentStroke.finishStroke) {
+	                self.currentStroke.finishStroke();
 	              }
 	              console.log(self);
 	              console.log(evt);
@@ -3611,6 +3614,9 @@
 	      var distance = this.firstPoint.distanceTo(pointerPosition);
 	      this.mesh.scale.set(distance, distance, distance);
 	      return true;
+	    },
+	    finishStroke: function() {
+	      console.log("STROKE DONE!");
 	    }
 	  },
 	  {thumbnail: 'brushes/thumb_single_sphere.png', spacing: 0.0}

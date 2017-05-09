@@ -23,6 +23,9 @@ AFRAME.registerBrush('marbleBrush',
       var distance = this.firstPoint.distanceTo(pointerPosition);
       this.mesh.scale.set(distance, distance, distance);
       return true;
+    },
+    finishStroke: function() {
+      console.log("STROKE DONE!");
     }
   },
   {thumbnail: 'brushes/thumb_single_sphere.png', spacing: 0.0}
