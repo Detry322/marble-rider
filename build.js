@@ -1854,7 +1854,7 @@
 	  schema: {
 	    color: {type: 'color', default: '#ef2d5e'},
 	    size: {default: 0.01, min: 0.001, max: 0.3},
-	    brush: {default: 'marbleBrush'},
+	    brush: {default: 'lineBrush'},
 	    enabled: { default: true }
 	  },
 	  init: function () {
@@ -3659,7 +3659,7 @@
 	      console.log(this.entity);
 	    }
 	  },
-	  {thumbnail: 'brushes/thumb_stamp_squares.png', spacing: 0.0}
+	  {thumbnail: 'brushes/thumb_stamp_column.gif', spacing: 0.0}
 	);
 
 
