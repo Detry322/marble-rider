@@ -35,5 +35,5 @@ AFRAME.registerBrush('lineBrush',
       console.log(this.entity);
     }
   },
-  {thumbnail: 'brushes/thumb_single_sphere.png', spacing: 0.0}
+  {thumbnail: 'brushes/thumb_stamp_squares.png', spacing: 0.0}
 );
