@@ -30,6 +30,9 @@ AFRAME.registerBrush('lineBrush',
     },
     finishStroke: function() {
       this.entity.setAttribute('static-body', '');
+      this.entity.setAttribute('position', this.firstPoint.x + ' ' + this.firstPoint.y + ' ' + this.firstPoint.z);
+      this.entity.setAttribute('rotation', this.mesh.rotation);
+      console.log(this.entity);
     }
   },
   {thumbnail: 'brushes/thumb_single_sphere.png', spacing: 0.0}

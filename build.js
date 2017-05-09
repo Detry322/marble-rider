@@ -1854,7 +1854,7 @@
 	  schema: {
 	    color: {type: 'color', default: '#ef2d5e'},
 	    size: {default: 0.01, min: 0.001, max: 0.3},
-	    brush: {default: 'lineBrush'},
+	    brush: {default: 'marbleBrush'},
 	    enabled: { default: true }
 	  },
 	  init: function () {
@@ -3610,7 +3610,7 @@
 	    },
 	    finishStroke: function() {
 	      this.entity.setAttribute('dynamic-body', '');
-	      this.entity.setAttribute('position', {x: this.firstPoint.x, y: this.firstPoint.y, z: this.firstPoint.z});
+	      this.entity.setAttribute('position', this.firstPoint.x + ' ' + this.firstPoint.y + ' ' + this.firstPoint.z);
 	    }
 	  },
 	  {thumbnail: 'brushes/thumb_single_sphere.png', spacing: 0.0}
@@ -3653,6 +3653,9 @@
 	    },
 	    finishStroke: function() {
 	      this.entity.setAttribute('static-body', '');
+	      this.entity.setAttribute('position', this.firstPoint.x + ' ' + this.firstPoint.y + ' ' + this.firstPoint.z);
+	      this.entity.setAttribute('rotation', this.mesh.rotation);
+	      console.log(this.entity);
 	    }
 	  },
 	  {thumbnail: 'brushes/thumb_single_sphere.png', spacing: 0.0}
