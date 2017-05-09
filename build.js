@@ -2688,10 +2688,10 @@
 	      //   }
 	      //   break;
 	      // }
-	      case name === 'sizebg': {
-	        this.onBrushSizeBackgroundDown(position);
-	        break;
-	      }
+	      // case name === 'sizebg': {
+	      //   this.onBrushSizeBackgroundDown(position);
+	      //   break;
+	      // }
 	      case this.brushRegexp.test(name): {
 	        this.onBrushDown(name);
 	        break;
