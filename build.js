@@ -3609,8 +3609,8 @@
 	      return true;
 	    },
 	    finishStroke: function() {
+	      this.entity.setAttribute('position', {x: this.mesh.position.x, y: this.mesh.position.y, z: this.mesh.position.z});
 	      this.mesh.position.set(0, 0, 0);
-	      this.entity.setAttribute('position', this.firstPoint);
 	      this.entity.setAttribute('dynamic-body', '');
 	    }
 	  },
@@ -3653,8 +3653,10 @@
 	      return true;
 	    },
 	    finishStroke: function() {
-	      this.entity.setAttribute('position', this.firstPoint);
-	      this.entity.setAttribute('rotation', this.mesh.rotation);
+	      this.entity.setAttribute('position', {x: this.mesh.position.x, y: this.mesh.position.y, z: this.mesh.position.z});
+	      this.mesh.position.set(0, 0, 0);
+	      this.entity.setAttribute('rotation', {x: this.mesh.rotation.x, y: this.mesh.rotation.y, z: this.mesh.rotation.z});
+	      this.mesh.rotation.set(0, 0, 0);
 	      this.entity.setAttribute('static-body', '');
 	      console.log(this.entity);
 	    }

@@ -25,8 +25,8 @@ AFRAME.registerBrush('marbleBrush',
       return true;
     },
     finishStroke: function() {
+      this.entity.setAttribute('position', {x: this.mesh.position.x, y: this.mesh.position.y, z: this.mesh.position.z});
       this.mesh.position.set(0, 0, 0);
-      this.entity.setAttribute('position', this.firstPoint);
       this.entity.setAttribute('dynamic-body', '');
     }
   },
