@@ -3609,8 +3609,9 @@
 	      return true;
 	    },
 	    finishStroke: function() {
+	      
+	      this.entity.setAttribute('position', this.firstPoint);
 	      this.entity.setAttribute('dynamic-body', '');
-	      this.entity.setAttribute('position', this.firstPoint.x + ' ' + this.firstPoint.y + ' ' + this.firstPoint.z);
 	    }
 	  },
 	  {thumbnail: 'brushes/thumb_single_sphere.png', spacing: 0.0}
@@ -3652,9 +3653,9 @@
 	      return true;
 	    },
 	    finishStroke: function() {
-	      this.entity.setAttribute('static-body', '');
-	      this.entity.setAttribute('position', this.firstPoint.x + ' ' + this.firstPoint.y + ' ' + this.firstPoint.z);
+	      this.entity.setAttribute('position', this.firstPoint);
 	      this.entity.setAttribute('rotation', this.mesh.rotation);
+	      this.entity.setAttribute('static-body', '');
 	      console.log(this.entity);
 	    }
 	  },
