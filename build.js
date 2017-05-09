@@ -1921,6 +1921,7 @@
 	                self.currentStroke.entity.setAttribute('static-body', '');
 	              }
 	              console.log(self);
+	              console.log(evt);
 	            }
 	            self.currentStroke = null;
 	          }
