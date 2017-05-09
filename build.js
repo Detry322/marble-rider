@@ -1855,7 +1855,7 @@
 	  schema: {
 	    color: {type: 'color', default: '#ef2d5e'},
 	    size: {default: 0.01, min: 0.001, max: 0.3},
-	    brush: {default: 'line'},
+	    brush: {default: 'lineBrush'},
 	    enabled: { default: true }
 	  },
 	  init: function () {
@@ -1916,7 +1916,11 @@
 	          if (self.active) {
 	            self.previousEntity = self.currentEntity;
 	            if (self.currentStroke) {
-	              self.currentStroke.entity.setAttribute('dynamic-body', '');
+	              if (self.data.bush == 'marbleBrush') {
+	                self.currentStroke.entity.setAttribute('dynamic-body', '');
+	              } else if (self.data.brush == 'lineBrush') {
+	                self.currentStroke.entity.setAttribute('static-body', '');
+	              }
 	              console.log(self);
 	            }
 	            self.currentStroke = null;
