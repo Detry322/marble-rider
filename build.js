@@ -2856,14 +2856,14 @@
 	  },
 
 	  onBrushSizeBackgroundDown: function (position) {
-	    var slider = this.objects.sizeSlider;
-	    var sliderBoundingBox = slider.geometry.boundingBox;
-	    var sliderWidth = sliderBoundingBox.max.x - sliderBoundingBox.min.x;
-	    slider.updateMatrixWorld();
-	    slider.worldToLocal(position);
-	    var brushSize = (position.x - sliderBoundingBox.min.x) / sliderWidth;
-	    brushSize = brushSize * AFRAME.components.brush.schema.size.max;
-	    this.handEl.setAttribute('brush', 'size', brushSize);
+	    // var slider = this.objects.sizeSlider;
+	    // var sliderBoundingBox = slider.geometry.boundingBox;
+	    // var sliderWidth = sliderBoundingBox.max.x - sliderBoundingBox.min.x;
+	    // slider.updateMatrixWorld();
+	    // slider.worldToLocal(position);
+	    // var brushSize = (position.x - sliderBoundingBox.min.x) / sliderWidth;
+	    // brushSize = brushSize * AFRAME.components.brush.schema.size.max;
+	    // this.handEl.setAttribute('brush', 'size', brushSize);
 	  },
 
 	  handleHover: function () {
