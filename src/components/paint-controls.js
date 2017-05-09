@@ -82,7 +82,7 @@ AFRAME.registerComponent('paint-controls', {
       this.controller = controllerName;
     });
 
-    el.addEventListener('brushsize-changed', function (evt) { self.changeBrushSize(evt.detail.size); });
+    // el.addEventListener('brushsize-changed', function (evt) { self.changeBrushSize(evt.detail.size); });
     el.addEventListener('brushcolor-changed', function (evt) { self.changeBrushColor(evt.detail.color); });
 
     function createTexture (texture) {
@@ -133,10 +133,10 @@ AFRAME.registerComponent('paint-controls', {
   },
 
   changeBrushSize: function (size) {
-    // var scale = size / 2 * 10;
-    // if (this.modelLoaded) {
-    //   this.buttonMeshes.sizeHint.scale.set(scale, scale, 1);
-    // }
+    var scale = size / 2 * 10;
+    if (this.modelLoaded) {
+      this.buttonMeshes.sizeHint.scale.set(scale, scale, 1);
+    }
   },
 
   // buttonId
