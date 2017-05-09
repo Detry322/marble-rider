@@ -29,7 +29,7 @@ AFRAME.registerBrush('lineBrush',
       return true;
     },
     finishStroke: function() {
-      console.log("STROKE DONE!");
+      this.entity.setAttribute('static-body', '');
     }
   },
   {thumbnail: 'brushes/thumb_single_sphere.png', spacing: 0.0}

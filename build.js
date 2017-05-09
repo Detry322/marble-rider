@@ -1915,16 +1915,9 @@
 	          if (self.active) {
 	            self.previousEntity = self.currentEntity;
 	            if (self.currentStroke) {
-	              if (self.data.brush == 'marbleBrush') {
-	                self.currentStroke.entity.setAttribute('dynamic-body', '');
-	              } else if (self.data.brush == 'lineBrush') {
-	                self.currentStroke.entity.setAttribute('static-body', '');
-	              }
 	              if (self.currentStroke.finishStroke) {
 	                self.currentStroke.finishStroke();
 	              }
-	              console.log(self);
-	              console.log(evt);
 	            }
 	            self.currentStroke = null;
 	          }
@@ -3616,7 +3609,7 @@
 	      return true;
 	    },
 	    finishStroke: function() {
-	      console.log("STROKE DONE!");
+	      this.entity.setAttribute('dynamic-body', '');
 	    }
 	  },
 	  {thumbnail: 'brushes/thumb_single_sphere.png', spacing: 0.0}
@@ -3658,7 +3651,7 @@
 	      return true;
 	    },
 	    finishStroke: function() {
-	      console.log("STROKE DONE!");
+	      this.entity.setAttribute('static-body', '');
 	    }
 	  },
 	  {thumbnail: 'brushes/thumb_single_sphere.png', spacing: 0.0}
