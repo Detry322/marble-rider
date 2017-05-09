@@ -70,50 +70,50 @@ AFRAME.registerSystem('painter', {
     });
 
     // @fixme This is just for debug until we'll get some UI
-    document.addEventListener('keyup', function (event) {
-      if (event.keyCode === 8) {
-        // Undo (Backspace)
-        self.brushSystem.undo();
-      }
-      if (event.keyCode === 67) {
-        // Clear (c)
-        self.brushSystem.clear();
-      }
-      if (event.keyCode === 78) {
-        // Next brush (n)
-        var hands = document.querySelectorAll('[paint-controls]');
-        var brushesNames = Object.keys(AFRAME.BRUSHES);
-        var index = brushesNames.indexOf(hands[0].components.brush.data.brush);
-        index = (index + 1) % brushesNames.length;
-        [].forEach.call(hands, function (hand) {
-          hand.setAttribute('brush', 'brush', brushesNames[index]);
-        });
-      }
-      if (event.keyCode === 82) {
-        // Random stroke (r)
-        self.brushSystem.generateRandomStrokes(1);
-      }
-      if (event.keyCode === 76) {
-        // load binary from file (l)
-        self.brushSystem.loadFromUrl('demo.apa', true);
-      }
-      if (event.keyCode === 85) { // u - upload
-        self.upload();
-      }
-      if (event.keyCode === 86) { // v - save
-        self.save();
-      }
-      if (event.keyCode === 74) { // j - save json
-        self.saveJSON();
-      }
-      if (event.keyCode === 79) { // o - toggle template objects+images visibility
-        self.showTemplateItems = !self.showTemplateItems;
-        var templateItems = document.querySelectorAll('.templateitem');
-        for (var i = 0; i < templateItems.length; i++) {
-            templateItems[i].setAttribute('visible', self.showTemplateItems);
-        }
-      }
-    });
+    // document.addEventListener('keyup', function (event) {
+    //   if (event.keyCode === 8) {
+    //     // Undo (Backspace)
+    //     self.brushSystem.undo();
+    //   }
+    //   if (event.keyCode === 67) {
+    //     // Clear (c)
+    //     self.brushSystem.clear();
+    //   }
+    //   if (event.keyCode === 78) {
+    //     // Next brush (n)
+    //     var hands = document.querySelectorAll('[paint-controls]');
+    //     var brushesNames = Object.keys(AFRAME.BRUSHES);
+    //     var index = brushesNames.indexOf(hands[0].components.brush.data.brush);
+    //     index = (index + 1) % brushesNames.length;
+    //     [].forEach.call(hands, function (hand) {
+    //       hand.setAttribute('brush', 'brush', brushesNames[index]);
+    //     });
+    //   }
+    //   if (event.keyCode === 82) {
+    //     // Random stroke (r)
+    //     self.brushSystem.generateRandomStrokes(1);
+    //   }
+    //   if (event.keyCode === 76) {
+    //     // load binary from file (l)
+    //     self.brushSystem.loadFromUrl('demo.apa', true);
+    //   }
+    //   if (event.keyCode === 85) { // u - upload
+    //     self.upload();
+    //   }
+    //   if (event.keyCode === 86) { // v - save
+    //     self.save();
+    //   }
+    //   if (event.keyCode === 74) { // j - save json
+    //     self.saveJSON();
+    //   }
+    //   if (event.keyCode === 79) { // o - toggle template objects+images visibility
+    //     self.showTemplateItems = !self.showTemplateItems;
+    //     var templateItems = document.querySelectorAll('.templateitem');
+    //     for (var i = 0; i < templateItems.length; i++) {
+    //         templateItems[i].setAttribute('visible', self.showTemplateItems);
+    //     }
+    //   }
+    // });
   },
   // saveJSON: function () {
   //   var json = this.brushSystem.getJSON();
