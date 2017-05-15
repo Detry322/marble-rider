@@ -4,7 +4,7 @@ AFRAME.registerSystem('paint-controls', {
 
 /* globals AFRAME THREE */
 AFRAME.registerComponent('paint-controls', {
-  dependencies: ['brush'],
+  dependencies: ['left-brush', 'right-brush'],
 
   schema: {
     hand: {default: 'left'}

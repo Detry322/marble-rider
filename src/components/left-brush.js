@@ -1,9 +1,9 @@
 /* globals AFRAME THREE */
-AFRAME.registerComponent('brush', {
+AFRAME.registerComponent('left-brush', {
   schema: {
     color: {type: 'color', default: '#ef2d5e'},
     size: {default: 0.01, min: 0.001, max: 0.3},
-    brush: {default: 'line-brush'},
+    brush: {default: 'marble-brush'},
     enabled: { default: true }
   },
   init: function () {
