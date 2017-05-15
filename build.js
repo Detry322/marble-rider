@@ -3656,7 +3656,6 @@
 	      this.entity.setAttribute('position', {x: this.mesh.position.x, y: this.mesh.position.y, z: this.mesh.position.z});
 	      this.mesh.position.set(0, 0, 0);
 	      this.entity.object3D.setRotationFromQuaternion(this.mesh.quaternion);
-	      console.log(rotation);
 	      this.mesh.rotation.set(0, 0, 0);
 	      this.entity.setAttribute('static-body', '');
 	    }
