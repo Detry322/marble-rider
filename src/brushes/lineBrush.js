@@ -31,11 +31,13 @@ AFRAME.registerBrush('line-brush',
     finishStroke: function() {
       this.entity.setAttribute('position', {x: this.mesh.position.x, y: this.mesh.position.y, z: this.mesh.position.z});
       this.mesh.position.set(0, 0, 0);
-      this.entity.setAttribute('rotation', {
+      rotation = {
         x: THREE.Math.radToDeg(this.mesh.rotation.x),
         y: THREE.Math.radToDeg(this.mesh.rotation.y),
         z: THREE.Math.radToDeg(this.mesh.rotation.z)
-      });
+      }
+      this.entity.setAttribute('rotation', rotation);
+      console.log(rotation);
       this.mesh.rotation.set(0, 0, 0);
       this.entity.setAttribute('static-body', '');
     }
