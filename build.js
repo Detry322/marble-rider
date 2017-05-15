@@ -2768,7 +2768,6 @@
 	    }
 	    selectedObjects[object.name] = object;
 	    this.selectedBrush = object;
-	    console.log(object.name)
 	  },
 
 	  onHueDown: function (position) {
