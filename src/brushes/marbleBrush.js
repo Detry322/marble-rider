@@ -30,5 +30,5 @@ AFRAME.registerBrush('marbleBrush',
       this.entity.setAttribute('dynamic-body', '');
     }
   },
-  {thumbnail: 'brushes/thumb_single_sphere.png', spacing: 0.0}
+  {thumbnail: 'brushes/thumb_single_sphere.png', spacing: 0.01}
 );
