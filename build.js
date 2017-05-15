@@ -3661,7 +3661,7 @@
 	      console.log(this.entity);
 	    }
 	  },
-	  {thumbnail: 'brushes/thumb_stamp_column.gif', spacing: 0.0}
+	  {thumbnail: 'brushes/thumb_stamp_squares.gif', spacing: 0.0}
 	);
 
 
