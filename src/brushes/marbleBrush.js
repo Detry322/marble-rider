@@ -27,7 +27,7 @@ AFRAME.registerBrush('marble-brush',
     finishStroke: function() {
       this.entity.setAttribute('position', {x: this.mesh.position.x, y: this.mesh.position.y, z: this.mesh.position.z});
       this.mesh.position.set(0, 0, 0);
-      this.entity.setAttribute('dynamic-body', 'mass: 2');
+      this.entity.setAttribute('dynamic-body', 'mass: 2; shape: sphere');
     }
   },
   {thumbnail: 'brushes/thumb_single_sphere.png', spacing: 0.01}
