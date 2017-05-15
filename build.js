@@ -3633,7 +3633,7 @@
 	        side: THREE.FrontSide,
 	        shading: THREE.SmoothShading
 	      });
-	      this.geometry = new THREE.CubeGeometry(0.1, 0.1, 1);
+	      this.geometry = new THREE.CubeGeometry(0.05, 0.05, 1);
 	      this.mesh = new THREE.Mesh(this.geometry, this.material);
 	      this.object3D.add(this.mesh);
 	      this.mesh.visible = false
