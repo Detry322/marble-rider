@@ -9,7 +9,7 @@ AFRAME.registerBrush('line-brush',
         side: THREE.FrontSide,
         shading: THREE.SmoothShading
       });
-      this.geometry = new THREE.CylinderGeometry(0.05, 0.05, 1, 32);
+      this.geometry = new THREE.CubeGeometry(0.05, 0.05, 1);
       this.mesh = new THREE.Mesh(this.geometry, this.material);
       this.object3D.add(this.mesh);
       this.mesh.visible = false
@@ -21,7 +21,7 @@ AFRAME.registerBrush('line-brush',
       }
       this.mesh.visible = true
       var distance = this.firstPoint.distanceTo(pointerPosition);
-      this.mesh.scale.set(1, distance, 1);
+      this.mesh.scale.set(1, 1, distance);
       this.mesh.position.x = (this.firstPoint.x + pointerPosition.x)/2;
       this.mesh.position.y = (this.firstPoint.y + pointerPosition.y)/2;
       this.mesh.position.z = (this.firstPoint.z + pointerPosition.z)/2;
