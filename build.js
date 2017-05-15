@@ -3655,12 +3655,7 @@
 	    finishStroke: function() {
 	      this.entity.setAttribute('position', {x: this.mesh.position.x, y: this.mesh.position.y, z: this.mesh.position.z});
 	      this.mesh.position.set(0, 0, 0);
-	      rotation = {
-	        x: 0,
-	        y: 0,
-	        z: THREE.Math.radToDeg(this.mesh.rotation.z)
-	      }
-	      this.entity.object3D.rotation = this.mesh.rotation.clone();
+	      this.entity.object3D.setRotationFromQuaternion(this.mesh.quaternion);
 	      console.log(rotation);
 	      this.mesh.rotation.set(0, 0, 0);
 	      this.entity.setAttribute('static-body', '');
