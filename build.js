@@ -66,10 +66,9 @@
 	__webpack_require__(16);
 	__webpack_require__(17);
 	__webpack_require__(18);
-	__webpack_require__(19);
 
+	__webpack_require__(19);
 	__webpack_require__(20);
-	__webpack_require__(21);
 	// require('./brushes/line.js');
 	// require('./brushes/stamp.js');
 	// require('./brushes/spheres.js');
@@ -1851,7 +1850,7 @@
 /***/ (function(module, exports) {
 
 	/* globals AFRAME THREE */
-	AFRAME.registerComponent('right-brush', {
+	AFRAME.registerComponent('brush', {
 	  schema: {
 	    color: {type: 'color', default: '#ef2d5e'},
 	    size: {default: 0.01, min: 0.001, max: 0.3},
@@ -1961,117 +1960,6 @@
 /* 11 */
 /***/ (function(module, exports) {
 
-	/* globals AFRAME THREE */
-	AFRAME.registerComponent('left-brush', {
-	  schema: {
-	    color: {type: 'color', default: '#ef2d5e'},
-	    size: {default: 0.01, min: 0.001, max: 0.3},
-	    brush: {default: 'marble-brush'},
-	    enabled: { default: true }
-	  },
-	  init: function () {
-	    var data = this.data;
-	    this.color = new THREE.Color(data.color);
-
-	    this.el.emit('brushcolor-changed', {color: this.color});
-	    this.el.emit('brushsize-changed', {brushSize: data.size});
-
-	    this.active = false;
-	    this.obj = this.el.object3D;
-
-	    this.currentStroke = null;
-	    this.strokeEntities = [];
-
-	    this.sizeModifier = 0.0;
-	    this.textures = {};
-	    this.currentMap = 0;
-
-	    this.model = this.el.getObject3D('mesh');
-	    this.drawing = false;
-
-	    var self = this;
-
-	    this.previousAxis = 0;
-	/*
-	    this.el.addEventListener('axismove', function (evt) {
-	      if (evt.detail.axis[0] === 0 && evt.detail.axis[1] === 0 || this.previousAxis === evt.detail.axis[1]) {
-	        return;
-	      }
-
-	      this.previousAxis = evt.detail.axis[1];
-	      var size = (evt.detail.axis[1] + 1) / 2 * self.schema.size.max;
-
-	      self.el.setAttribute('brush', 'size', size);
-	    });
-	*/
-	    this.el.addEventListener('buttondown', function (evt) {
-	      if (!self.data.enabled) { return; }
-	      // Grip
-	      if (evt.detail.id === 2) {
-	        self.system.undo();
-	      }
-	    });
-
-	    this.el.addEventListener('buttonchanged', function (evt) {
-	      if (!self.data.enabled) { return; }
-	      // Trigger
-	      if (evt.detail.id === 1) {
-	        var value = evt.detail.state.value;
-	        self.sizeModifier = value;
-	        if (value > 0.1) {
-	          if (!self.active) {
-	            self.startNewStroke();
-	            self.active = true;
-	          }
-	        } else {
-	          if (self.active) {
-	            self.previousEntity = self.currentEntity;
-	            if (self.currentStroke) {
-	              if (self.currentStroke.finishStroke) {
-	                self.currentStroke.finishStroke();
-	              }
-	            }
-	            self.currentStroke = null;
-	          }
-	          self.active = false;
-	        }
-	      }
-	    });
-	  },
-	  update: function (oldData) {
-	    var data = this.data;
-	    if (oldData.color !== data.color) {
-	      this.color.set(data.color);
-	      this.el.emit('brushcolor-changed', {color: this.color});
-	    }
-	    if (oldData.size !== data.size) {
-	      this.el.emit('brushsize-changed', {size: data.size});
-	    }
-	  },
-	  tick: (function () {
-	    var position = new THREE.Vector3();
-	    var rotation = new THREE.Quaternion();
-	    var scale = new THREE.Vector3();
-
-	    return function tick (time, delta) {
-	      if (this.currentStroke && this.active) {
-	        this.obj.matrixWorld.decompose(position, rotation, scale);
-	        var pointerPosition = this.system.getPointerPosition(position, rotation);
-	        this.currentStroke.addPoint(position, rotation, pointerPosition, this.sizeModifier, time);
-	      }
-	    };
-	  })(),
-	  startNewStroke: function () {
-	    this.currentStroke = this.system.addNewStroke(this.data.brush, this.color, this.data.size);
-	    this.el.emit('stroke-started', {entity: this.el, stroke: this.currentStroke});
-	  }
-	});
-
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports) {
-
 	/* global AFRAME */
 	var utils = AFRAME.utils;
 
@@ -2112,7 +2000,7 @@
 
 
 /***/ }),
-/* 13 */
+/* 12 */
 /***/ (function(module, exports) {
 
 	/* globals AFRAME THREE */
@@ -2145,7 +2033,7 @@
 
 
 /***/ }),
-/* 14 */
+/* 13 */
 /***/ (function(module, exports) {
 
 	/* globals AFRAME THREE */
@@ -2181,7 +2069,7 @@
 
 
 /***/ }),
-/* 15 */
+/* 14 */
 /***/ (function(module, exports) {
 
 	AFRAME.registerComponent('look-controls-alt', {
@@ -2301,7 +2189,7 @@
 
 
 /***/ }),
-/* 16 */
+/* 15 */
 /***/ (function(module, exports) {
 
 	AFRAME.registerComponent('orbit-controls', {
@@ -2378,7 +2266,7 @@
 
 
 /***/ }),
-/* 17 */
+/* 16 */
 /***/ (function(module, exports) {
 
 	AFRAME.registerSystem('paint-controls', {
@@ -2387,7 +2275,7 @@
 
 	/* globals AFRAME THREE */
 	AFRAME.registerComponent('paint-controls', {
-	  dependencies: ['left-brush', 'right-brush'],
+	  dependencies: ['brush'],
 
 	  schema: {
 	    hand: {default: 'left'}
@@ -2593,7 +2481,7 @@
 
 
 /***/ }),
-/* 18 */
+/* 17 */
 /***/ (function(module, exports) {
 
 	/* globals AFRAME THREE */
@@ -3526,7 +3414,7 @@
 
 
 /***/ }),
-/* 19 */
+/* 18 */
 /***/ (function(module, exports) {
 
 	/* globals AFRAME THREE */
@@ -3691,7 +3579,7 @@
 
 
 /***/ }),
-/* 20 */
+/* 19 */
 /***/ (function(module, exports) {
 
 	/* globals AFRAME THREE */
@@ -3731,7 +3619,7 @@
 
 
 /***/ }),
-/* 21 */
+/* 20 */
 /***/ (function(module, exports) {
 
 	/* globals AFRAME THREE */
