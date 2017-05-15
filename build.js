@@ -3657,8 +3657,8 @@
 	      this.mesh.position.set(0, 0, 0);
 	      rotation = {
 	        x: THREE.Math.radToDeg(this.mesh.rotation.x),
-	        y: THREE.Math.radToDeg(this.mesh.rotation.y),
-	        z: THREE.Math.radToDeg(this.mesh.rotation.z)
+	        y: 0,
+	        z: 0
 	      }
 	      this.entity.setAttribute('rotation', rotation);
 	      console.log(rotation);
