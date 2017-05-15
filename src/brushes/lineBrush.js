@@ -33,7 +33,7 @@ AFRAME.registerBrush('line-brush',
       this.mesh.position.set(0, 0, 0);
       rotation = {
         x: 0,
-        y: THREE.Math.radToDeg(this.mesh.rotation.y),
+        y: THREE.Math.radToDeg(-this.mesh.rotation.y),
         z: 0
       }
       this.entity.setAttribute('rotation', rotation);
