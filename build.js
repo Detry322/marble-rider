@@ -3646,7 +3646,7 @@
 	      }
 	      this.mesh.visible = true
 	      var distance = this.firstPoint.distanceTo(pointerPosition);
-	      this.mesh.scale.set(distance, 1, 1);
+	      this.mesh.scale.set(1, distance, 1);
 	      this.mesh.position.x = (this.firstPoint.x + pointerPosition.x)/2;
 	      this.mesh.position.y = (this.firstPoint.y + pointerPosition.y)/2;
 	      this.mesh.position.z = (this.firstPoint.z + pointerPosition.z)/2;
