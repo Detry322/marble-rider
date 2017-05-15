@@ -1854,7 +1854,7 @@
 	  schema: {
 	    color: {type: 'color', default: '#ef2d5e'},
 	    size: {default: 0.01, min: 0.001, max: 0.3},
-	    brush: {default: 'lineBrush'},
+	    brush: {default: 'line-brush'},
 	    enabled: { default: true }
 	  },
 	  init: function () {
@@ -2768,6 +2768,7 @@
 	    }
 	    selectedObjects[object.name] = object;
 	    this.selectedBrush = object;
+	    console.log(object.name)
 	  },
 
 	  onHueDown: function (position) {
@@ -3583,7 +3584,7 @@
 /***/ (function(module, exports) {
 
 	/* globals AFRAME THREE */
-	AFRAME.registerBrush('marbleBrush',
+	AFRAME.registerBrush('marble-brush',
 	  {
 	    init: function (color, width) {
 	      this.material = new THREE.MeshStandardMaterial({
@@ -3614,7 +3615,7 @@
 	      this.entity.setAttribute('dynamic-body', '');
 	    }
 	  },
-	  {thumbnail: 'brushes/thumb_single_sphere.png', spacing: 0.0}
+	  {thumbnail: 'brushes/thumb_single_sphere.png', spacing: 0.01}
 	);
 
 
@@ -3623,7 +3624,7 @@
 /***/ (function(module, exports) {
 
 	/* globals AFRAME THREE */
-	AFRAME.registerBrush('lineBrush',
+	AFRAME.registerBrush('line-brush',
 	  {
 	    init: function (color, width) {
 	      this.material = new THREE.MeshStandardMaterial({
@@ -3664,7 +3665,7 @@
 	      this.entity.setAttribute('static-body', '');
 	    }
 	  },
-	  {thumbnail: 'brushes/thumb_stamp_squares.gif', spacing: 0.0}
+	  {thumbnail: 'brushes/thumb_stamp_squares.gif', spacing: 0.01}
 	);
 
 

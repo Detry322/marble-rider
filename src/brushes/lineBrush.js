@@ -1,5 +1,5 @@
 /* globals AFRAME THREE */
-AFRAME.registerBrush('lineBrush',
+AFRAME.registerBrush('line-brush',
   {
     init: function (color, width) {
       this.material = new THREE.MeshStandardMaterial({
