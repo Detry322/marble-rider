@@ -3660,7 +3660,7 @@
 	        y: 0,
 	        z: THREE.Math.radToDeg(this.mesh.rotation.z)
 	      }
-	      this.entity.setAttribute('rotation', rotation);
+	      this.entity.object3D.rotation = this.mesh.rotation.clone();
 	      console.log(rotation);
 	      this.mesh.rotation.set(0, 0, 0);
 	      this.entity.setAttribute('static-body', '');
